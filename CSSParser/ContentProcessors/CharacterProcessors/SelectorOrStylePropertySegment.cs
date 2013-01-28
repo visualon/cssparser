@@ -4,6 +4,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 {
 	public class SelectorOrStylePropertySegment : SelectorOrStyleSegment
 	{
-		public SelectorOrStylePropertySegment(IGenerateCharacterProcessors processorFactory) : base(ProcessingTypeOptions.StyleOrSelector, processorFactory) { }
+		public SelectorOrStylePropertySegment(SingleLineCommentsSupportOptions singleLineCommentsSupportOptions, IGenerateCharacterProcessors processorFactory)
+			: base(ProcessingTypeOptions.StyleOrSelector, singleLineCommentsSupportOptions, processorFactory) { }
 	}
 }

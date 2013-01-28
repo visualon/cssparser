@@ -7,15 +7,22 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 	public abstract class SelectorOrStyleSegment : IProcessCharacters
 	{
 		private readonly ProcessingTypeOptions _processingType;
+		private readonly SingleLineCommentsSupportOptions _singleLineCommentsSupportOptions;
 		private readonly IGenerateCharacterProcessors _processorFactory;
-		protected SelectorOrStyleSegment(ProcessingTypeOptions processingType, IGenerateCharacterProcessors processorFactory)
+		protected SelectorOrStyleSegment(
+			ProcessingTypeOptions processingType,
+			SingleLineCommentsSupportOptions singleLineCommentsSupportOptions,
+			IGenerateCharacterProcessors processorFactory)
 		{
 			if (!Enum.IsDefined(typeof(ProcessingTypeOptions), processingType))
 				throw new ArgumentOutOfRangeException("processingType");
+			if (!Enum.IsDefined(typeof(SingleLineCommentsSupportOptions), singleLineCommentsSupportOptions))
+				throw new ArgumentOutOfRangeException("singleLineCommentsSupportOptions");
 			if (processorFactory == null)
 				throw new ArgumentNullException("processorFactory");
 
 			_processingType = processingType;
+			_singleLineCommentsSupportOptions = singleLineCommentsSupportOptions;
 			_processorFactory = processorFactory;
 		}
 
@@ -23,6 +30,12 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 		{
 			StyleOrSelector,
 			Value
+		}
+
+		public enum SingleLineCommentsSupportOptions
+		{
+			DoNotSupport,
+			Support
 		}
 
 		public CharacterProcessorResult Process(IWalkThroughStrings stringNavigator)
@@ -71,7 +84,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			}
 
 			// To deal with comments we use specialised comment-handling processors
-			if ((stringNavigator.TryToGetCharacterString(2) ?? "") == "//")
+			if ((_singleLineCommentsSupportOptions == SingleLineCommentsSupportOptions.Support) && ((stringNavigator.TryToGetCharacterString(2) ?? "") == "//"))
 			{
 				return new CharacterProcessorResult(
 					CharacterCategorisationOptions.Comment,
@@ -122,12 +135,16 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 
 		private IProcessCharacters GetSelectorOrStyleCharacterProcessor()
 		{
-			return (_processingType == ProcessingTypeOptions.StyleOrSelector) ? this : _processorFactory.Get<SelectorOrStylePropertySegment>(_processorFactory);
+			return (_processingType == ProcessingTypeOptions.StyleOrSelector)
+				? this
+				: _processorFactory.Get<SelectorOrStylePropertySegment>(_singleLineCommentsSupportOptions, _processorFactory);
 		}
 
 		private IProcessCharacters GetValueCharacterProcessor()
 		{
-			return (_processingType == ProcessingTypeOptions.Value) ? this : _processorFactory.Get<StyleValueSegment>(_processorFactory);
+			return (_processingType == ProcessingTypeOptions.Value)
+				? this
+				: _processorFactory.Get<StyleValueSegment>(_singleLineCommentsSupportOptions, _processorFactory);
 		}
 	}
 }
