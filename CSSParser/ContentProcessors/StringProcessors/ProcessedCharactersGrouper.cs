@@ -22,7 +22,6 @@ namespace CSSParser.ContentProcessors.StringProcessors
 			// It doesn'actually matter what the initial value of currentCharacterType is since it won't be used until there is string content
 			// to record, and by that point it will have been assigned a value
 			var currentCharacterType = CharacterCategorisationOptions.SelectorOrStyleProperty;
-			var processedStrings = new List<CategorisedCharacterString>();
 			var stringBuilder = new StringBuilder();
 			while (contentWalker.CurrentCharacter != null)
 			{
@@ -31,7 +30,7 @@ namespace CSSParser.ContentProcessors.StringProcessors
 				{
 					if (stringBuilder.Length > 0)
 					{
-						processedStrings.Add(new CategorisedCharacterString(stringBuilder.ToString(), currentCharacterType));
+						yield return new CategorisedCharacterString(stringBuilder.ToString(), currentCharacterType);
 						stringBuilder.Clear();
 					}
 					currentCharacterType = processResult.CharacterCategorisation;
@@ -42,9 +41,7 @@ namespace CSSParser.ContentProcessors.StringProcessors
 				contentWalker = contentWalker.Next;
 			}
 			if (stringBuilder.Length > 0)
-				processedStrings.Add(new CategorisedCharacterString(stringBuilder.ToString(), currentCharacterType));
-
-			return processedStrings;
+				yield return new CategorisedCharacterString(stringBuilder.ToString(), currentCharacterType);
 		}
 	}
 }
