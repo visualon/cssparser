@@ -59,7 +59,7 @@
     <Compile Include="ContentProcessors\CharacterProcessors\CommentSegment.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\SelectorOrStyleSegment.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\MultiLineCommentSegment.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\CssSingleLineCommentSegment.cs" />
+    <Compile Include="ContentProcessors\CharacterProcessors\SingleLineCommentSegment.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\SkipCharactersSegment.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\ISegment.cs" />
     <Compile Include="ContentProcessors\StringProcessors\ICollectStringsOfProcessedCharacters.cs" />

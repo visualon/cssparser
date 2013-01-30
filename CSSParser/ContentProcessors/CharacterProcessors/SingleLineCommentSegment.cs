@@ -4,10 +4,10 @@ using CSSParser.ContentProcessors.CharacterProcessors.Factories;
 
 namespace CSSParser.ContentProcessors.CharacterProcessors
 {
-	public class CssSingleLineCommentSegment : CommentSegment
+	public class SingleLineCommentSegment : CommentSegment
 	{
 		private readonly IGenerateCharacterProcessors _processorFactory;
-		public CssSingleLineCommentSegment(IProcessCharacters characterProcessorToReturnTo, IGenerateCharacterProcessors processorFactory) : base(characterProcessorToReturnTo)
+		public SingleLineCommentSegment(IProcessCharacters characterProcessorToReturnTo, IGenerateCharacterProcessors processorFactory) : base(characterProcessorToReturnTo)
 		{
 			if (processorFactory == null)
 				throw new ArgumentNullException("processorFactory");

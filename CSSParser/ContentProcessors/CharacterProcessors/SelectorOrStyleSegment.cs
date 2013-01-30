@@ -88,7 +88,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			{
 				return new CharacterProcessorResult(
 					CharacterCategorisationOptions.Comment,
-					_processorFactory.Get<CssSingleLineCommentSegment>(this, _processorFactory)
+					_processorFactory.Get<SingleLineCommentSegment>(this, _processorFactory)
 				);
 			}
 			if ((stringNavigator.TryToGetCharacterString(2) ?? "") == "/*")
