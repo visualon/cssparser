@@ -22,24 +22,21 @@ namespace CSSParser.StringNavigators
 		{
 			get { return _value[_index]; }
 		}
+
+		/// <summary>
+		/// This return null if the current location in the string has no content (eg. anywhere on an empty string or past the end of a non-empty string)
+		/// </summary>
 		char? IWalkThroughStrings.CurrentCharacter { get { return CurrentCharacter; } }
 
-		public IWalkThroughStrings Previous
-		{
-			get
-			{
-				if (_index == 0)
-					return new GoneTooFarBackwardStringNavigator(_value, 1);
-				return new StringNavigator(_value, _index - 1);
-			}
-		}
-
+		/// <summary>
+		/// This return null if the current location in the string has no content (eg. anywhere on an empty string or past the end of a non-empty string)
+		/// </summary>
 		public IWalkThroughStrings Next
 		{
 			get
 			{
 				if (_index == _value.Length - 1)
-					return new GoneTooFarForwardStringNavigator(_value, 1);
+					return new GoneTooFarStringNavigator();
 				return new StringNavigator(_value, _index + 1);
 			}
 		}

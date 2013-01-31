@@ -10,11 +10,6 @@
 		/// <summary>
 		/// This will never return null
 		/// </summary>
-		IWalkThroughStrings Previous { get; }
-
-		/// <summary>
-		/// This will never return null
-		/// </summary>
 		IWalkThroughStrings Next { get; }
 	}
 }
