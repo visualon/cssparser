@@ -4,6 +4,9 @@ using CSSParser.StringNavigators;
 
 namespace CSSParser.ContentProcessors.StringProcessors
 {
+	/// <summary>
+	/// This will use IWalkThroughStrings and IProcessCharacters to generate a set of CategorisedCharacterString instances
+	/// </summary>
 	public interface ICollectStringsOfProcessedCharacters
 	{
 		/// <summary>

@@ -6,6 +6,11 @@ using CSSParser.StringNavigators;
 
 namespace CSSParser.ContentProcessors.StringProcessors
 {
+	/// <summary>
+	/// This will use IWalkThroughStrings and IProcessCharacters to generate a set of CategorisedCharacterString instances. This implementation will only parse the
+	/// content while the returned set is being enumerated (so if only the start of the content is being examined then the work to parse the rest of the content
+	/// need not be performed).
+	/// </summary>
 	public class ProcessedCharactersGrouper : ICollectStringsOfProcessedCharacters
 	{
 		/// <summary>
