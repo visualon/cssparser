@@ -23,6 +23,7 @@ namespace CSSParser.ContentProcessors.StringProcessors
 			// to record, and by that point it will have been assigned a value
 			var currentCharacterType = CharacterCategorisationOptions.SelectorOrStyleProperty;
 			var stringBuilder = new StringBuilder();
+			var currentCharacterIndex = 0;
 			while (contentWalker.CurrentCharacter != null)
 			{
 				var processResult = contentProcessor.Process(contentWalker);
@@ -30,7 +31,8 @@ namespace CSSParser.ContentProcessors.StringProcessors
 				{
 					if (stringBuilder.Length > 0)
 					{
-						yield return new CategorisedCharacterString(stringBuilder.ToString(), currentCharacterType);
+						var value = stringBuilder.ToString();
+						yield return new CategorisedCharacterString(value, currentCharacterIndex - value.Length, currentCharacterType);
 						stringBuilder.Clear();
 					}
 					currentCharacterType = processResult.CharacterCategorisation;
@@ -39,9 +41,13 @@ namespace CSSParser.ContentProcessors.StringProcessors
 
 				contentProcessor = processResult.NextProcessor;
 				contentWalker = contentWalker.Next;
+				currentCharacterIndex++;
 			}
 			if (stringBuilder.Length > 0)
-				yield return new CategorisedCharacterString(stringBuilder.ToString(), currentCharacterType);
+			{
+				var value = stringBuilder.ToString();
+				yield return new CategorisedCharacterString(value, currentCharacterIndex - value.Length, currentCharacterType);
+			}
 		}
 	}
 }
