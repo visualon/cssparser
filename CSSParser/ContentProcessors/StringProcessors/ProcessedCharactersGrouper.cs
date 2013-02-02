@@ -9,7 +9,8 @@ namespace CSSParser.ContentProcessors.StringProcessors
 	/// <summary>
 	/// This will use IWalkThroughStrings and IProcessCharacters to generate a set of CategorisedCharacterString instances. This implementation will only parse the
 	/// content while the returned set is being enumerated (so if only the start of the content is being examined then the work to parse the rest of the content
-	/// need not be performed).
+	/// need not be performed). All runs of characters that are of the same CharacterCategorisationOptions will be combined into one string (note: this means
+	/// that runs of opening braces that aren't separated by whitespace will be combined into one string containing those multiple braces).
 	/// </summary>
 	public class ProcessedCharactersGrouper : ICollectStringsOfProcessedCharacters
 	{

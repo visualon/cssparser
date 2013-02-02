@@ -11,7 +11,10 @@ namespace CSSParser
 	{
 		/// <summary>
 		/// This will never return null nor a set containing any null references. It will throw an exception for a null content reference.
-		/// CSS does not support single line comment, unlike LESS CSS.
+		/// CSS does not support single line comment, unlike LESS CSS. The content parsing is deferred so that the work to parse the content
+		/// is only performed as the returned data is enumerated over. All runs of characters that are of the same CharacterCategorisationOptions
+		/// will be combined into one string (note: this means that runs of opening braces that aren't separated by whitespace will be combined
+		/// into one string containing those multiple braces).
 		/// </summary>
 		public static IEnumerable<CategorisedCharacterString> ParseCSS(string content)
 		{
@@ -23,7 +26,10 @@ namespace CSSParser
 
 		/// <summary>
 		/// This will never return null nor a set containing any null references. It will throw an exception for a null content reference.
-		/// LESS CSS supports single line comments as well the multiline comment format supported by standard CSS.
+		/// LESS CSS supports single line comments as well the multiline comment format supported by standard CSS. The content parsing is
+		/// deferred so that the work to parse the content is only performed as the returned data is enumerated over. All runs of characters
+		/// that are of the same CharacterCategorisationOptions will be combined into one string (note: this means that runs of opening braces
+		/// that aren't separated by whitespace will be combined into one string containing those multiple braces).
 		/// </summary>
 		public static IEnumerable<CategorisedCharacterString> ParseLESS(string content)
 		{
