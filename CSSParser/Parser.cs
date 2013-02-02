@@ -48,7 +48,7 @@ namespace CSSParser
 				new CharacterProcessorsFactory()
 			);
 			return (new ProcessedCharactersGrouper()).GetStrings(
-				new StringNavigator(content),
+				(content == "") ? (IWalkThroughStrings)(new GoneTooFarStringNavigator()) : new StringNavigator(content),
 				processorFactory.Get<SelectorOrStylePropertySegment>(
 					supportSingleLineComments
 						? SelectorOrStyleSegment.SingleLineCommentsSupportOptions.Support
