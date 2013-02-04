@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using CSSParser.ContentProcessors.CharacterProcessors;
 using CSSParser.StringNavigators;
@@ -9,11 +10,20 @@ namespace CSSParser.ContentProcessors.StringProcessors
 	/// <summary>
 	/// This will use IWalkThroughStrings and IProcessCharacters to generate a set of CategorisedCharacterString instances. This implementation will only parse the
 	/// content while the returned set is being enumerated (so if only the start of the content is being examined then the work to parse the rest of the content
-	/// need not be performed). All runs of characters that are of the same CharacterCategorisationOptions will be combined into one string (note: this means
-	/// that runs of opening braces that aren't separated by whitespace will be combined into one string containing those multiple braces).
+	/// need not be performed). Most runs of characters that are of the same CharacterCategorisationOptions will be combined into one string - the only types
+	/// that will not be combined are CloseBrace, OpenBrace and SemiColon since it seems counter-intuitive when using the parsed content for this to be
+	/// the case (eg. when looking for two closing braces, it makes more sense to expect two individual strings of type CloseBrace than one string
+	/// of type CloseBrace that is two characters long).
 	/// </summary>
 	public class ProcessedCharactersGrouper : ICollectStringsOfProcessedCharacters
 	{
+		private static CharacterCategorisationOptions[] CharacterTypesToNotGroup = new[]
+		{
+			CharacterCategorisationOptions.CloseBrace,
+			CharacterCategorisationOptions.OpenBrace,
+			CharacterCategorisationOptions.SemiColon
+		};
+
 		/// <summary>
 		/// This will never return null nor a set containing any null references. It will throw an exception for null contentWalker or contentProcessor
 		/// references or it the processing failed.
@@ -33,7 +43,7 @@ namespace CSSParser.ContentProcessors.StringProcessors
 			while (contentWalker.CurrentCharacter != null)
 			{
 				var processResult = contentProcessor.Process(contentWalker);
-				if (processResult.CharacterCategorisation != currentCharacterType)
+				if ((processResult.CharacterCategorisation != currentCharacterType) || CharacterTypesToNotGroup.Contains(processResult.CharacterCategorisation))
 				{
 					if (stringBuilder.Length > 0)
 					{
