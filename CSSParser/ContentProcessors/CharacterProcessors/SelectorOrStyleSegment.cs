@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
 using CSSParser.ContentProcessors.CharacterProcessors.Factories;
 using CSSParser.StringNavigators;
 
@@ -70,6 +72,20 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			}
 			else if (stringNavigator.CurrentCharacter == ':')
 			{
+				// If the colon indicates a pseudo-class for a selector then we want to continue processing it as a selector and not presume
+				// that the content type has switched to a value (this is more complicated with LESS nesting to support, if it was just CSS
+				// then things would have been easier!)
+				if (_processingType == ProcessingTypeOptions.StyleOrSelector)
+				{
+					var potentialPseudoClass = ReadNextWord(stringNavigator.Next);
+					if ((potentialPseudoClass != "") && PseudoClasses.Contains(potentialPseudoClass))
+					{
+						return new CharacterProcessorResult(
+							CharacterCategorisationOptions.SelectorOrStyleProperty,
+							GetSelectorOrStyleCharacterProcessor()
+						);
+					}
+				}
 				return new CharacterProcessorResult(
 					CharacterCategorisationOptions.StylePropertyColon,
 					GetValueCharacterProcessor()
@@ -146,5 +162,37 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 				? this
 				: _processorFactory.Get<StyleValueSegment>(_singleLineCommentsSupportOptions, _processorFactory);
 		}
+
+		/// <summary>
+		/// This will read the next from the given point in the string navigator - it will start from the first non-whitespace character and terminate at
+		/// the next whitespace character, other "termination" characters that indicate the end of a selector segment "word" (eg. ;:,.#) or at the end of
+		/// the string if that is reached first.
+		/// </summary>
+		private string ReadNextWord(IWalkThroughStrings stringNavigator)
+		{
+			if (stringNavigator == null)
+				throw new ArgumentNullException("stringNavigator");
+			
+			var terminationCharacters = new[] { ';', ':', '\'', '"', '.', ',', '#', '>', '(', ')', '[', ']' };
+			var contentBuilder = new StringBuilder();
+			while (stringNavigator.CurrentCharacter != null)
+			{
+				if (char.IsWhiteSpace(stringNavigator.CurrentCharacter.Value))
+				{
+					if (contentBuilder.Length > 0)
+						break;
+				}
+				else
+				{
+					if (terminationCharacters.Contains(stringNavigator.CurrentCharacter.Value))
+						break;
+					contentBuilder.Append(stringNavigator.CurrentCharacter.Value);
+				}
+				stringNavigator = stringNavigator.Next;
+			}
+			return contentBuilder.ToString().Trim();
+		}
+
+		private static readonly string[] PseudoClasses = new[] { "link", "visited", "active", "hover", "focus", "first-letter", "first-line", "first-child", "before", "after", "lang" };
 	}
 }
