@@ -67,7 +67,6 @@
     <Compile Include="ContentProcessors\StringProcessors\ProcessedCharactersGrouper.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringNavigators\IWalkThroughStrings_Extensions.cs" />
     <Compile Include="StringNavigators\GoneTooFarStringNavigator.cs" />
     <Compile Include="StringNavigators\IWalkThroughStrings.cs" />
     <Compile Include="StringNavigators\StringNavigator.cs" />

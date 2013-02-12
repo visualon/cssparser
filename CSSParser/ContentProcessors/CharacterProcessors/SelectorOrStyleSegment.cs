@@ -100,14 +100,14 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			}
 
 			// To deal with comments we use specialised comment-handling processors
-			if ((_singleLineCommentsSupportOptions == SingleLineCommentsSupportOptions.Support) && ((stringNavigator.TryToGetCharacterString(2) ?? "") == "//"))
+			if ((_singleLineCommentsSupportOptions == SingleLineCommentsSupportOptions.Support) && (stringNavigator.TryToGetCharacterString(2) == "//"))
 			{
 				return new CharacterProcessorResult(
 					CharacterCategorisationOptions.Comment,
 					_processorFactory.Get<SingleLineCommentSegment>(this, _processorFactory)
 				);
 			}
-			if ((stringNavigator.TryToGetCharacterString(2) ?? "") == "/*")
+			if (stringNavigator.TryToGetCharacterString(2) == "/*")
 			{
 				return new CharacterProcessorResult(
 					CharacterCategorisationOptions.Comment,
@@ -115,7 +115,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 				);
 			}
 
-			if ((stringNavigator.TryToGetCharacterString(6) ?? "").Equals("@media", StringComparison.InvariantCultureIgnoreCase))
+			if (stringNavigator.TryToGetCharacterString(6).Equals("@media", StringComparison.InvariantCultureIgnoreCase))
 			{
 				// Although media query declarations will be marked as SelectorOrStyleProperty content, special handling is required to
 				// ensure that any colons that exist in it are identified as part of the SelectorOrStyleProperty and not marked as a
