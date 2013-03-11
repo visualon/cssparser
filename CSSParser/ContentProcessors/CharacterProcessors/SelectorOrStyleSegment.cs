@@ -134,7 +134,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 					CharacterCategorisationOptions.Value,
 					_processorFactory.Get<QuotedValueSegment>(
 						stringNavigator.CurrentCharacter.Value,
-						GetSelectorOrStyleCharacterProcessor(),
+						GetValueCharacterProcessor(),
 						_processorFactory
 					)
 				);

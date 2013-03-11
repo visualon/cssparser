@@ -38,6 +38,33 @@ namespace UnitTests
 			);
 		}
 
+		[Fact]
+		public void EndOfQuotedStylePropertyMayNotBeEndOfEntryStyleProperty()
+		{
+			var content = "body { font-family: \"Segoe UI\", Verdana; }";
+			var expected = new CategorisedCharacterString[]
+			{
+				new CategorisedCharacterString("body", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 4, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("{", 5, CharacterCategorisationOptions.OpenBrace),
+				new CategorisedCharacterString(" ", 6, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("font-family", 7, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(":", 18, CharacterCategorisationOptions.StylePropertyColon),
+				new CategorisedCharacterString(" ", 19, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("\"Segoe UI\",", 20, CharacterCategorisationOptions.Value),
+				new CategorisedCharacterString(" ", 31, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("Verdana", 32, CharacterCategorisationOptions.Value),
+				new CategorisedCharacterString(";", 39, CharacterCategorisationOptions.SemiColon),
+				new CategorisedCharacterString(" ", 40, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("}", 41, CharacterCategorisationOptions.CloseBrace)
+			};
+			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
+				expected,
+				Parser.ParseLESS(content),
+				new ParsedContentComparer()
+			);
+		}
+
 		private class ParsedContentComparer : IEqualityComparer<IEnumerable<CategorisedCharacterString>>
 		{
 			public bool Equals(IEnumerable<CategorisedCharacterString> x, IEnumerable<CategorisedCharacterString> y)
