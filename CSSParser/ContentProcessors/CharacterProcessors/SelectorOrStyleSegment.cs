@@ -77,8 +77,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 				// then things would have been easier!)
 				if (_processingType == ProcessingTypeOptions.StyleOrSelector)
 				{
-					var potentialPseudoClass = ReadNextWord(stringNavigator.Next);
-					if ((potentialPseudoClass != "") && PseudoClasses.Contains(potentialPseudoClass))
+					if (IsNextWordOneOfThePseudoClasses(stringNavigator.Next))
 					{
 						return new CharacterProcessorResult(
 							CharacterCategorisationOptions.SelectorOrStyleProperty,
@@ -164,33 +163,28 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 		}
 
 		/// <summary>
+		/// TODO: ..
 		/// This will read the next from the given point in the string navigator - it will start from the first non-whitespace character and terminate at
 		/// the next whitespace character, other "termination" characters that indicate the end of a selector segment "word" (eg. ;:,.#) or at the end of
 		/// the string if that is reached first.
 		/// </summary>
-		private string ReadNextWord(IWalkThroughStrings stringNavigator)
+		private bool IsNextWordOneOfThePseudoClasses(IWalkThroughStrings stringNavigator)
 		{
 			if (stringNavigator == null)
 				throw new ArgumentNullException("stringNavigator");
-			
-			var terminationCharacters = new[] { ';', ':', '\'', '"', '.', ',', '#', '>', '(', ')', '[', ']' };
-			var contentBuilder = new StringBuilder();
-			while (stringNavigator.CurrentCharacter != null)
+
+			foreach (var pseudoClassGroupedByLength in PseudoClasses.GroupBy(v => v.Length).Select(g => new { Length = g.Key, Values = g.ToArray() }).OrderBy(g => g.Length))
 			{
-				if (char.IsWhiteSpace(stringNavigator.CurrentCharacter.Value))
+				var content = stringNavigator.TryToGetCharacterString(pseudoClassGroupedByLength.Length);
+				if (content.Length < pseudoClassGroupedByLength.Length)
 				{
-					if (contentBuilder.Length > 0)
-						break;
+					// There is not enough content remaining in the string navigator for this group or any following group, since they are ordered by length
+					return false;
 				}
-				else
-				{
-					if (terminationCharacters.Contains(stringNavigator.CurrentCharacter.Value))
-						break;
-					contentBuilder.Append(stringNavigator.CurrentCharacter.Value);
-				}
-				stringNavigator = stringNavigator.Next;
+				if (pseudoClassGroupedByLength.Values.Contains(content))
+					return true;
 			}
-			return contentBuilder.ToString().Trim();
+			return false;
 		}
 
 		private static readonly string[] PseudoClasses = new[] { "link", "visited", "active", "hover", "focus", "first-letter", "first-line", "first-child", "before", "after", "lang" };

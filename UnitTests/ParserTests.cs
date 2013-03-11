@@ -39,6 +39,26 @@ namespace UnitTests
 		}
 
 		[Fact]
+		public void PseudoClassesShouldNotBeIdentifiedAsPropertyValuesWhenMinified()
+		{
+			var content = "a:hover{color:blue}";
+			var expected = new CategorisedCharacterString[]
+			{
+				new CategorisedCharacterString("a:hover", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString("{", 7, CharacterCategorisationOptions.OpenBrace),
+				new CategorisedCharacterString("color", 8, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(":", 13, CharacterCategorisationOptions.StylePropertyColon),
+				new CategorisedCharacterString("blue", 14, CharacterCategorisationOptions.Value),
+				new CategorisedCharacterString("}", 18, CharacterCategorisationOptions.CloseBrace)
+			};
+			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
+				expected,
+				Parser.ParseLESS(content),
+				new ParsedContentComparer()
+			);
+		}
+
+		[Fact]
 		public void EndOfQuotedStylePropertyMayNotBeEndOfEntryStyleProperty()
 		{
 			var content = "body { font-family: \"Segoe UI\", Verdana; }";
