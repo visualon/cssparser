@@ -163,16 +163,19 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 		}
 
 		/// <summary>
-		/// TODO: ..
-		/// This will read the next from the given point in the string navigator - it will start from the first non-whitespace character and terminate at
-		/// the next whitespace character, other "termination" characters that indicate the end of a selector segment "word" (eg. ;:,.#) or at the end of
-		/// the string if that is reached first.
+		/// This will try to determine whether the next word from the given point in the string navigator is a recognised pseudo class. Any whitespace at
+		/// the current position will be moved over and the content, if any, taken from there.
 		/// </summary>
 		private bool IsNextWordOneOfThePseudoClasses(IWalkThroughStrings stringNavigator)
 		{
 			if (stringNavigator == null)
 				throw new ArgumentNullException("stringNavigator");
 
+			// Skip over any whitespace to find the start of the next content
+			while ((stringNavigator.CurrentCharacter != null) && char.IsWhiteSpace(stringNavigator.CurrentCharacter.Value))
+				stringNavigator = stringNavigator.Next;
+
+			// Determine whether that content (if there is any) matches any of the pseudo classes
 			foreach (var pseudoClassGroupedByLength in PseudoClasses.GroupBy(v => v.Length).Select(g => new { Length = g.Key, Values = g.ToArray() }).OrderBy(g => g.Length))
 			{
 				var content = stringNavigator.TryToGetCharacterString(pseudoClassGroupedByLength.Length);

@@ -59,6 +59,27 @@ namespace UnitTests
 		}
 
 		[Fact]
+		public void PseudoClassesShouldNotBeIdentifiedAsPropertyValuesWhenWhitespaceIsPresentAroundTheColon()
+		{
+			var content = "a : hover{}";
+			var expected = new CategorisedCharacterString[]
+			{
+				new CategorisedCharacterString("a", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 1, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString(":", 2, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 3, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("hover", 4, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString("{", 9, CharacterCategorisationOptions.OpenBrace),
+				new CategorisedCharacterString("}", 10, CharacterCategorisationOptions.CloseBrace)
+			};
+			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
+				expected,
+				Parser.ParseLESS(content),
+				new ParsedContentComparer()
+			);
+		}
+
+		[Fact]
 		public void EndOfQuotedStylePropertyMayNotBeEndOfEntryStyleProperty()
 		{
 			var content = "body { font-family: \"Segoe UI\", Verdana; }";
