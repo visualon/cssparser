@@ -7,6 +7,13 @@ using CSSParser.StringNavigators;
 
 namespace CSSParser
 {
+	/// <summary>
+	/// The parsing performed by these methods is intended to be as cheap as possible but in exchange it performs only simplistic parsing of the
+	/// content (it doesn't differentiate between selectors - eg. "div.Header h2.Name, div.Footer" and style property names - eg. "color" - for
+	/// example). The quality of the data may be improved by passing the returned CategorisedCharacterString set through the
+	/// LessCssHierarchicalParser, this WILL differentiate between selectors and style property names and will represent nested styles (for
+	/// LESS CSS content) and styles nested within media queries. It requires an additional processing step, though.
+	/// </summary>
 	public static class Parser
 	{
 		/// <summary>
