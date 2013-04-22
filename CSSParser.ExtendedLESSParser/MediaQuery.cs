@@ -5,8 +5,9 @@ using System.Linq;
 namespace CSSParser.ExtendedLESSParser
 {
 	/// <summary>
-	/// This ContainerFragment represent a Media Query that whose ChildFragments should all be Selectors (if the source content was valid), its Selectors SelectorSet
-	/// should only have a single value (unlike the Selector class which may have multiple Selectors - eg. "div#Header h2, div#Footer")
+	/// This ContainerFragment represent a Media Query, its Selectors SelectorSet should only have a single value (unlike the Selector class which may have multiple
+	/// Selectors - eg. "div#Header h2, div#Footer"). LESS CSS supports Media Queries that wrap styles and/or other selectors whilst regular CSS only supports the
+	/// wrapping of selectors in Media Queries.
 	/// </summary>
 	public class MediaQuery : ContainerFragment
 	{
