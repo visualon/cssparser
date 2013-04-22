@@ -35,9 +35,6 @@ namespace CSSParser.ExtendedLESSParser
 			if (childFragmentsTidied.Any(f => f == null))
 				throw new ArgumentException("Null reference encountered in childFragments set");
 
-			if (selectors.First().Value.StartsWith("@media"))
-				throw new ArgumentException("This Selector does not appear to be a Media Query");
-
 			Selectors = selectors;
 			SourceLineIndex = sourceLineIndex;
 			_parentSelectors = parentSelectorsTidied;
