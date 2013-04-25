@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContainerFragment.cs" />
+    <Compile Include="Import.cs" />
     <Compile Include="MediaQuery.cs" />
     <Compile Include="StylePropertyValue.cs" />
     <Compile Include="LessCssHierarchicalParser.cs" />

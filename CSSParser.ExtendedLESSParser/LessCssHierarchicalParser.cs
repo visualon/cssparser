@@ -13,9 +13,9 @@ namespace CSSParser.ExtendedLESSParser
 	/// values within the selectors. Selectors may be nested in the case of selectors within media queries or selectors nested within other
 	/// selectors (as enabled by LESS CSS).
 	/// </summary>
-	public class LessCssHierarchicalParser
+	public static class LessCssHierarchicalParser
 	{
-		public IEnumerable<ICSSFragment> ParseIntoStructuredData(IEnumerable<CategorisedCharacterString> segments)
+		public static IEnumerable<ICSSFragment> ParseIntoStructuredData(IEnumerable<CategorisedCharacterString> segments)
 		{
 			if (segments == null)
 				throw new ArgumentNullException("segments");
@@ -36,7 +36,7 @@ namespace CSSParser.ExtendedLESSParser
 			return parsedData;
 		}
 
-		private IEnumerable<ICSSFragment> ParseIntoStructuredData(
+		private static IEnumerable<ICSSFragment> ParseIntoStructuredData(
 			IEnumerator<CategorisedCharacterString> segmentEnumerator,
 			IEnumerable<Selector.SelectorSet> parentSelectors,
 			int sourceLineIndex)
@@ -115,6 +115,18 @@ namespace CSSParser.ExtendedLESSParser
 					case CharacterCategorisationOptions.SemiColon:
 						if (selectorOrStyleContentBuffer.Length > 0)
 						{
+							// TODO
+							var selectorOrStyleContent = selectorOrStyleContentBuffer.ToString();
+							if (selectorOrStyleContent.StartsWith("@import"))
+							{
+								fragments.Add(new Import(
+									selectorOrStyleContent.Substring("@import".Length).Trim(),
+									sourceLineIndex
+								));
+								selectorOrStyleContentBuffer.Clear();
+								continue;
+							}
+
 							// Note: The SemiColon case here probably suggests invalid content, it should only follow a Value segment (ignoring
 							// Comments and WhiteSpace), so if there is anything in the selectorOrStyleContentBuffer before the SemiColon then
 							// it's probably not correct (but we're not validating for that here, we just don't want to throw anything away!)
@@ -130,6 +142,14 @@ namespace CSSParser.ExtendedLESSParser
 					case CharacterCategorisationOptions.Value:
 						if (selectorOrStyleContentBuffer.Length > 0)
 						{
+							// TODO
+							var selectorOrStyleContent = selectorOrStyleContentBuffer.ToString();
+							if (selectorOrStyleContent.StartsWith("@import"))
+							{
+								selectorOrStyleContentBuffer.Append(segment.Value);
+								continue;
+							}
+
 							// This is presumably an error condition, there should be a colon between SelectorOrStyleProperty content and
 							// Value content, but we're not validating here so just lump it all together
 							lastStylePropertyName = new StylePropertyName(
@@ -181,7 +201,7 @@ namespace CSSParser.ExtendedLESSParser
 			return fragments;
 		}
 
-		private Selector.SelectorSet GetSelectorSet(string selectors)
+		private static Selector.SelectorSet GetSelectorSet(string selectors)
 		{
 			if (string.IsNullOrWhiteSpace(selectors))
 				throw new ArgumentException("Null/blank selectors specified");
@@ -195,7 +215,7 @@ namespace CSSParser.ExtendedLESSParser
 			);
 		}
 
-		private int GetNumberOfLineReturnsFromContentIfAny(string content)
+		private static int GetNumberOfLineReturnsFromContentIfAny(string content)
 		{
 			if (content == null)
 				throw new ArgumentNullException("content");
