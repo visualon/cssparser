@@ -4,19 +4,31 @@ using CSSParser.ContentProcessors.CharacterProcessors.Factories;
 
 namespace CSSParser.ContentProcessors.CharacterProcessors
 {
-	public class QuotedValueSegment : IProcessCharacters
+	/// <summary>
+	/// This may be a quoted section of a property value or of an attribute selector (this will be determined by the characterCategorisation
+	/// passed to the constructor)
+	/// </summary>
+	public class QuotedSegment : IProcessCharacters
 	{
 		private readonly char _quoteCharacter;
+		private readonly CharacterCategorisationOptions _characterCategorisation;
 		private readonly IProcessCharacters _characterProcessorToReturnTo;
 		private readonly IGenerateCharacterProcessors _processorFactory;
-		public QuotedValueSegment(char quoteCharacter, IProcessCharacters characterProcessorToReturnTo, IGenerateCharacterProcessors processorFactory)
+		public QuotedSegment(
+			char quoteCharacter,
+			CharacterCategorisationOptions characterCategorisation,
+			IProcessCharacters characterProcessorToReturnTo,
+			IGenerateCharacterProcessors processorFactory)
 		{
 			if (characterProcessorToReturnTo == null)
 				throw new ArgumentNullException("characterProcessorToReturnTo");
+			if (!Enum.IsDefined(typeof(CharacterCategorisationOptions), characterCategorisation))
+				throw new ArgumentOutOfRangeException("characterCategorisation");
 			if (processorFactory == null)
 				throw new ArgumentNullException("processorFactory");
 
 			_quoteCharacter = quoteCharacter;
+			_characterCategorisation = characterCategorisation;
 			_characterProcessorToReturnTo = characterProcessorToReturnTo;
 			_processorFactory = processorFactory;
 		}
@@ -31,9 +43,9 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			if (stringNavigator.CurrentCharacter == '\\')
 			{
 				return new CharacterProcessorResult(
-					CharacterCategorisationOptions.Value,
+					_characterCategorisation,
 					_processorFactory.Get<SkipCharactersSegment>(
-						CharacterCategorisationOptions.Value,
+						_characterCategorisation,
 						1,
 						this
 					)
@@ -44,13 +56,13 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			if (stringNavigator.CurrentCharacter == _quoteCharacter)
 			{
 				return new CharacterProcessorResult(
-					CharacterCategorisationOptions.Value,
+					_characterCategorisation,
 					_characterProcessorToReturnTo
 				);
 			}
 
 			return new CharacterProcessorResult(
-				CharacterCategorisationOptions.Value,
+				_characterCategorisation,
 				this
 			);
 		}

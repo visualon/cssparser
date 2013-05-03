@@ -115,7 +115,6 @@ namespace CSSParser.ExtendedLESSParser
 					case CharacterCategorisationOptions.SemiColon:
 						if (selectorOrStyleContentBuffer.Length > 0)
 						{
-							// TODO
 							var selectorOrStyleContent = selectorOrStyleContentBuffer.ToString();
 							if (selectorOrStyleContent.StartsWith("@import"))
 							{
@@ -142,7 +141,6 @@ namespace CSSParser.ExtendedLESSParser
 					case CharacterCategorisationOptions.Value:
 						if (selectorOrStyleContentBuffer.Length > 0)
 						{
-							// TODO
 							var selectorOrStyleContent = selectorOrStyleContentBuffer.ToString();
 							if (selectorOrStyleContent.StartsWith("@import"))
 							{

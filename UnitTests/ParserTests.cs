@@ -39,6 +39,77 @@ namespace UnitTests
 		}
 
 		[Fact]
+		public void AttributeSelectorsShouldNotBeIdentifiedAsPropertyValues()
+		{
+			var content = "a[href] { }";
+			var expected = new CategorisedCharacterString[]
+			{
+				new CategorisedCharacterString("a[href]", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 7, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("{", 8, CharacterCategorisationOptions.OpenBrace),
+				new CategorisedCharacterString(" ", 9, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("}", 10, CharacterCategorisationOptions.CloseBrace)
+			};
+			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
+				expected,
+				Parser.ParseLESS(content),
+				new ParsedContentComparer()
+			);
+		}
+
+		[Fact]
+		public void AttributeSelectorsWithQuotedContentShouldNotBeIdentifiedAsPropertyValues()
+		{
+			var content = "input[type=\"text\"] { color: blue; }";
+			var expected = new CategorisedCharacterString[]
+			{
+				new CategorisedCharacterString("input[type=\"text\"]", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 18, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("{", 19, CharacterCategorisationOptions.OpenBrace),
+				new CategorisedCharacterString(" ", 20, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("color", 21, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(":", 26, CharacterCategorisationOptions.StylePropertyColon),
+				new CategorisedCharacterString(" ", 27, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("blue", 28, CharacterCategorisationOptions.Value),
+				new CategorisedCharacterString(";", 32, CharacterCategorisationOptions.SemiColon),
+				new CategorisedCharacterString(" ", 33, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("}", 34, CharacterCategorisationOptions.CloseBrace)
+			};
+			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
+				expected,
+				Parser.ParseLESS(content),
+				new ParsedContentComparer()
+			);
+		}
+
+		[Fact]
+		public void LESSMixinArgumentDefaultsShouldNotBeIdentifiedAsPropertyValues()
+		{
+			var content = ".RoundedCorners (@radius: 4px) { border-radius: @radius; }";
+			var expected = new CategorisedCharacterString[]
+			{
+				new CategorisedCharacterString(".RoundedCorners", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 15, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("(@radius: 4px)", 16, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 30, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("{", 31, CharacterCategorisationOptions.OpenBrace),
+				new CategorisedCharacterString(" ", 32, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("border-radius", 33, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(":", 46, CharacterCategorisationOptions.StylePropertyColon),
+				new CategorisedCharacterString(" ", 47, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("@radius", 48, CharacterCategorisationOptions.Value),
+				new CategorisedCharacterString(";", 55, CharacterCategorisationOptions.SemiColon),
+				new CategorisedCharacterString(" ", 56, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("}", 57, CharacterCategorisationOptions.CloseBrace)
+			};
+			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
+				expected,
+				Parser.ParseLESS(content),
+				new ParsedContentComparer()
+			);
+		}
+
+		[Fact]
 		public void PseudoClassesShouldNotBeIdentifiedAsPropertyValuesWhenMinified()
 		{
 			var content = "a:hover{color:blue}";

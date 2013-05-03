@@ -49,13 +49,14 @@
   <ItemGroup>
     <Compile Include="ContentProcessors\CharacterCategorisationOptions.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\CharacterProcessorResult.cs" />
+    <Compile Include="ContentProcessors\CharacterProcessors\BracketedSelectorSegment.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\Factories\CharacterProcessorsFactory.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\Factories\CachingCharacterProcessorsFactory.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\StyleValueSegment.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\SelectorOrStylePropertySegment.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\Factories\IGenerateCharacterProcessors.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\MediaQuerySegment.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\QuotedValueSegment.cs" />
+    <Compile Include="ContentProcessors\CharacterProcessors\QuotedSegment.cs" />
     <Compile Include="ContentProcessors\StringProcessors\CategorisedCharacterString.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\CommentSegment.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\SelectorOrStyleSegment.cs" />
