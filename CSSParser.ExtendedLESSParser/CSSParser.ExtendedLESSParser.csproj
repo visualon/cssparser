@@ -51,7 +51,6 @@
     <Compile Include="StylePropertyValue.cs" />
     <Compile Include="LessCssHierarchicalParser.cs" />
     <Compile Include="Selector.cs" />
-    <Compile Include="StyleProperty.cs" />
     <Compile Include="StylePropertyName.cs" />
     <Compile Include="ICSSFragment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

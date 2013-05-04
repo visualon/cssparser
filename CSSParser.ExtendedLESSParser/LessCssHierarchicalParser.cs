@@ -52,6 +52,7 @@ namespace CSSParser.ExtendedLESSParser
 			var selectorOrStyleContentBuffer = new StringBuilder();
 			var selectorOrStyleStartSourceLineIndex = -1;
 			StylePropertyName lastStylePropertyName = null;
+			var stylePropertyValueBuffer = new PropertyValueBuffer();
 			while (segmentEnumerator.MoveNext())
 			{
 				var segment = segmentEnumerator.Current;
@@ -74,11 +75,22 @@ namespace CSSParser.ExtendedLESSParser
 						if (selectorOrStyleContentBuffer.Length == 0)
 							selectorOrStyleStartSourceLineIndex = sourceLineIndex;
 						selectorOrStyleContentBuffer.Append(segment.Value);
+
+						// If we were building up content for a StylePropertyValue then encountering other content means that the value must have terminated
+						// (for valid CSS it should be only a semicolon or close brace that terminates a value but we're not concerned about invalid CSS here)
+						if (stylePropertyValueBuffer.HasContent)
+							fragments.Add(stylePropertyValueBuffer.ExtractCombinedContentAndClear());
 						continue;
 
 					case CharacterCategorisationOptions.OpenBrace:
 						if (selectorOrStyleContentBuffer.Length == 0)
 							throw new ArgumentException("Encountered OpenBrace with no preceding selector at line " + (sourceLineIndex + 1));
+
+						// If we were building up content for a StylePropertyValue then encountering other content means that the value must have terminated
+						// (for valid CSS it should be only a semicolon or close brace that terminates a value but we're not concerned about invalid CSS here)
+						if (stylePropertyValueBuffer.HasContent)
+							fragments.Add(stylePropertyValueBuffer.ExtractCombinedContentAndClear());
+
 						var selectors = GetSelectorSet(selectorOrStyleContentBuffer.ToString());
 						if (selectors.First().Value.StartsWith("@media"))
 						{
@@ -102,6 +114,11 @@ namespace CSSParser.ExtendedLESSParser
 						continue;
 
 					case CharacterCategorisationOptions.CloseBrace:
+						// If we were building up content for a StylePropertyValue then encountering other content means that the value must have terminated
+						// (for valid CSS it should be only a semicolon or close brace that terminates a value but we're not concerned about invalid CSS here)
+						if (stylePropertyValueBuffer.HasContent)
+							fragments.Add(stylePropertyValueBuffer.ExtractCombinedContentAndClear());
+						
 						if (selectorOrStyleContentBuffer.Length > 0)
 						{
 							fragments.Add(new StylePropertyName(
@@ -113,6 +130,11 @@ namespace CSSParser.ExtendedLESSParser
 
 					case CharacterCategorisationOptions.StylePropertyColon:
 					case CharacterCategorisationOptions.SemiColon:
+						// If we were building up content for a StylePropertyValue then encountering other content means that the value must have terminated
+						// (for valid CSS it should be only a semicolon or close brace that terminates a value but we're not concerned about invalid CSS here)
+						if (stylePropertyValueBuffer.HasContent)
+							fragments.Add(stylePropertyValueBuffer.ExtractCombinedContentAndClear());
+
 						if (selectorOrStyleContentBuffer.Length > 0)
 						{
 							var selectorOrStyleContent = selectorOrStyleContentBuffer.ToString();
@@ -159,9 +181,9 @@ namespace CSSParser.ExtendedLESSParser
 						}
 						if (lastStylePropertyName == null)
 							throw new Exception("Invalid content, orphan style property value encountered");
-						fragments.Add(new StylePropertyValue(
+						stylePropertyValueBuffer.Add(new StylePropertyValue(
 							lastStylePropertyName,
-							segment.Value,
+							new[] { segment.Value },
 							selectorOrStyleStartSourceLineIndex
 						));
 						continue;
@@ -196,6 +218,11 @@ namespace CSSParser.ExtendedLESSParser
 				}
 			}
 
+			// It's very feasible that there will still be some style property value content in the buffer at this point, so ensure it
+			// doesn't get lost
+			if (stylePropertyValueBuffer.HasContent)
+				fragments.Add(stylePropertyValueBuffer.ExtractCombinedContentAndClear());
+
 			return fragments;
 		}
 
@@ -211,6 +238,35 @@ namespace CSSParser.ExtendedLESSParser
 					.Where(s => s != "")
 					.Select(s => new Selector.WhiteSpaceNormalisedString(s))
 			);
+		}
+
+		private class PropertyValueBuffer
+		{
+			private readonly List<StylePropertyValue> _values = new List<StylePropertyValue>();
+			public void Add(StylePropertyValue value)
+			{
+				if (value == null)
+					throw new ArgumentNullException("value");
+				if (_values.Any() && (_values.First().Property.Value != value.Property.Value))
+					throw new ArgumentException("All values must relate to the same property");
+				_values.Add(value);
+			}
+			public bool HasContent
+			{
+				get { return _values.Any(); }
+			}
+			public StylePropertyValue ExtractCombinedContentAndClear()
+			{
+				if (!_values.Any())
+					throw new Exception("No content to retrieve");
+				var combinedContent = new StylePropertyValue(
+					_values.First().Property,
+					_values.SelectMany(v => v.ValueSegments),
+					_values.First().SourceLineIndex
+				);
+				_values.Clear();
+				return combinedContent;
+			}
 		}
 
 		private static int GetNumberOfLineReturnsFromContentIfAny(string content)
