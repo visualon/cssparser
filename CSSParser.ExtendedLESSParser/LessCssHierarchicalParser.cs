@@ -92,7 +92,7 @@ namespace CSSParser.ExtendedLESSParser
 							fragments.Add(stylePropertyValueBuffer.ExtractCombinedContentAndClear());
 
 						var selectors = GetSelectorSet(selectorOrStyleContentBuffer.ToString());
-						if (selectors.First().Value.StartsWith("@media"))
+						if (selectors.First().Value.StartsWith("@media", StringComparison.InvariantCultureIgnoreCase))
 						{
 							fragments.Add(new MediaQuery(
 								selectors,
@@ -138,7 +138,7 @@ namespace CSSParser.ExtendedLESSParser
 						if (selectorOrStyleContentBuffer.Length > 0)
 						{
 							var selectorOrStyleContent = selectorOrStyleContentBuffer.ToString();
-							if (selectorOrStyleContent.StartsWith("@import"))
+							if (selectorOrStyleContent.StartsWith("@import", StringComparison.InvariantCultureIgnoreCase))
 							{
 								fragments.Add(new Import(
 									selectorOrStyleContent.Substring("@import".Length).Trim(),
@@ -164,7 +164,7 @@ namespace CSSParser.ExtendedLESSParser
 						if (selectorOrStyleContentBuffer.Length > 0)
 						{
 							var selectorOrStyleContent = selectorOrStyleContentBuffer.ToString();
-							if (selectorOrStyleContent.StartsWith("@import"))
+							if (selectorOrStyleContent.StartsWith("@import", StringComparison.InvariantCultureIgnoreCase))
 							{
 								selectorOrStyleContentBuffer.Append(segment.Value);
 								continue;
@@ -198,7 +198,7 @@ namespace CSSParser.ExtendedLESSParser
 			if (selectorOrStyleContentBuffer.Length > 0)
 			{
 				var selectors = GetSelectorSet(selectorOrStyleContentBuffer.ToString());
-				if (selectors.First().Value.StartsWith("@media"))
+				if (selectors.First().Value.StartsWith("@media", StringComparison.InvariantCultureIgnoreCase))
 				{
 					fragments.Add(new MediaQuery(
 						selectors,
