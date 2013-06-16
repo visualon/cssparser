@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using CSSParser.ContentProcessors;
 using CSSParser.ContentProcessors.StringProcessors;
+using CSSParser.ExtendedLESSParser.ContentSections;
 
 namespace CSSParser.ExtendedLESSParser
 {

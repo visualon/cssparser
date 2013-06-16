@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CSSParser.ExtendedLESSParser
+namespace CSSParser.ExtendedLESSParser.ContentSections
 {
 	public class StylePropertyValue : ICSSFragment
 	{

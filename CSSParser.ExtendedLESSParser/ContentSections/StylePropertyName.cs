@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CSSParser.ExtendedLESSParser
+namespace CSSParser.ExtendedLESSParser.ContentSections
 {
 	public class StylePropertyName : ICSSFragment
 	{

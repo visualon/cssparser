@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CSSParser.ExtendedLESSParser
+namespace CSSParser.ExtendedLESSParser.ContentSections
 {
 	/// <summary>
 	/// This is a CSS fragment that represents a selector string, it may be multiple comma-separated selectors (if so, then the Selectors property will have multiple entries)

@@ -45,14 +45,14 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContainerFragment.cs" />
-    <Compile Include="Import.cs" />
-    <Compile Include="MediaQuery.cs" />
-    <Compile Include="StylePropertyValue.cs" />
+    <Compile Include="ContentSections\ContainerFragment.cs" />
+    <Compile Include="ContentSections\Import.cs" />
+    <Compile Include="ContentSections\MediaQuery.cs" />
+    <Compile Include="ContentSections\StylePropertyValue.cs" />
     <Compile Include="LessCssHierarchicalParser.cs" />
-    <Compile Include="Selector.cs" />
-    <Compile Include="StylePropertyName.cs" />
-    <Compile Include="ICSSFragment.cs" />
+    <Compile Include="ContentSections\Selector.cs" />
+    <Compile Include="ContentSections\StylePropertyName.cs" />
+    <Compile Include="ContentSections\ICSSFragment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

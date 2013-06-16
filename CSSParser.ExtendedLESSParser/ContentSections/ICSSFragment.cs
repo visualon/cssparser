@@ -1,4 +1,4 @@
-﻿namespace CSSParser.ExtendedLESSParser
+﻿namespace CSSParser.ExtendedLESSParser.ContentSections
 {
 	/// <summary>
 	/// This represents a significant CSS (or LESS) fragment such as selectors (which include media queries as well as CSS selectors) and style property names and values.

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CSSParser.ExtendedLESSParser
+namespace CSSParser.ExtendedLESSParser.ContentSections
 {
 	/// <summary>
 	/// This is a CSS fragment that represents contains other fragments - eg. a Selector or Media Query

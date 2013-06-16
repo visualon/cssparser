@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CSSParser.ExtendedLESSParser
+namespace CSSParser.ExtendedLESSParser.ContentSections
 {
 	/// <summary>
 	/// This ContainerFragment represent a Media Query, its Selectors SelectorSet should only have a single value (unlike the Selector class which may have multiple
