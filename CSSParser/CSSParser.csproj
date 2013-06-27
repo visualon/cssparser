@@ -58,7 +58,6 @@
     <Compile Include="ContentProcessors\CharacterProcessors\MediaQuerySegment.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\QuotedSegment.cs" />
     <Compile Include="ContentProcessors\StringProcessors\CategorisedCharacterString.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\CommentSegment.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\SelectorOrStyleSegment.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\MultiLineCommentSegment.cs" />
     <Compile Include="ContentProcessors\CharacterProcessors\SingleLineCommentSegment.cs" />

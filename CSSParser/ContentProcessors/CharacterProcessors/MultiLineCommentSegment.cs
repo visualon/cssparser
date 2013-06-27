@@ -4,18 +4,22 @@ using CSSParser.ContentProcessors.CharacterProcessors.Factories;
 
 namespace CSSParser.ContentProcessors.CharacterProcessors
 {
-	public class MultiLineCommentSegment : CommentSegment
+	public class MultiLineCommentSegment : IProcessCharacters
 	{
 		private readonly IGenerateCharacterProcessors _processorFactory;
-		public MultiLineCommentSegment(IProcessCharacters characterProcessorToReturnTo, IGenerateCharacterProcessors processorFactory) : base(characterProcessorToReturnTo)
+		private readonly IProcessCharacters _characterProcessorToReturnTo;
+		public MultiLineCommentSegment(IProcessCharacters characterProcessorToReturnTo, IGenerateCharacterProcessors processorFactory)
 		{
 			if (processorFactory == null)
 				throw new ArgumentNullException("processorFactory");
+			if (characterProcessorToReturnTo == null)
+				throw new ArgumentNullException("characterProcessorToReturnTo");
 
 			_processorFactory = processorFactory;
+			_characterProcessorToReturnTo = characterProcessorToReturnTo;
 		}
 
-		public override CharacterProcessorResult Process(IWalkThroughStrings stringNavigator)
+		public CharacterProcessorResult Process(IWalkThroughStrings stringNavigator)
 		{
 			if (stringNavigator == null)
 				throw new ArgumentNullException("stringNavigator");
