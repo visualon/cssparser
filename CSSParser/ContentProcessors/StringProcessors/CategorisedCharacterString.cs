@@ -29,5 +29,10 @@ namespace CSSParser.ContentProcessors.StringProcessors
 		public int IndexInSource { get; private set; }
 
 		public CharacterCategorisationOptions CharacterCategorisation { get; private set; }
+
+		public override string ToString()
+		{
+			return base.ToString() + ":" + Value;
+		}
 	}
 }
