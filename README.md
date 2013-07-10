@@ -61,7 +61,9 @@ This analysis can be done very cheaply as it is only a very simple representatio
 
 To arrange in a hierchical manner and to categorise more strictly, the data return from ParseCSS or ParseLess can be passed into 
 
-    IEnumerable<ICSSFragment> ParseIntoStructuredData(IEnumerable<CategorisedCharacterString> segments)
+    IEnumerable<ICSSFragment> ParseIntoStructuredData(
+      IEnumerable<CategorisedCharacterString> segments
+    )
 
 (within the static class **CSSParser.ExtendedLESSParser.LessCssHierarchicalParser**) which transforms the data again. The interface **ICSSFragment** is implemented by the classes **Import** (describing an import statement for another stylesheet), a **MediaQuery** or a **Selector** (both of which have a "ChildFragments" set as they may contain other media queries, selectors and/or properties), a **StylePropertyName** or **StylePropertyValue**. Note that comments and whitespace are not included in this data.
 
