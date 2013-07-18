@@ -71,6 +71,10 @@
     <Compile Include="StringNavigators\GoneTooFarStringNavigator.cs" />
     <Compile Include="StringNavigators\IWalkThroughStrings.cs" />
     <Compile Include="StringNavigators\StringNavigator.cs" />
+    <Compile Include="TextReaderNavigators\WeakEventSource.cs" />
+    <Compile Include="TextReaderNavigators\WeakEventSourceOperators.cs" />
+    <Compile Include="TextReaderNavigators\SimpleImmutableSet.cs" />
+    <Compile Include="TextReaderNavigators\TextReaderStringNavigator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
