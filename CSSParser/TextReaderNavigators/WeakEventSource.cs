@@ -88,11 +88,9 @@ namespace CSSParser.TextReaderNavigators
 
 		public void Fire(object sender, TEventArgs e)
 		{
-			if (sender == null)
-				throw new ArgumentNullException("sender");
-			if (e == null)
-				throw new ArgumentNullException("e");
-
+			// Note: Not checking for null "sender" or "e" references here since any contracts an event may have that these
+			// should or should not support nulls are not for us to deal with here
+			
 			var haveAnyCallbacksExpired = false;
 			var callbacksCopy = _callbacks;
 			foreach (var callback in callbacksCopy)
@@ -147,11 +145,9 @@ namespace CSSParser.TextReaderNavigators
 
 			public bool ExecuteCallbackIfTargetStillAlive(object sender, TEventArgs e)
 			{
-				if (sender == null)
-					throw new ArgumentNullException("sender");
-				if (e == null)
-					throw new ArgumentNullException("e");
-
+				// Note: Not checking for null "sender" or "e" references here since any contracts an event may have that these
+				// should or should not support nulls are not for us to deal with here
+				
 				// There is no target reference to expire so this will always return true after executing the callback
 				_callback(sender, e);
 				return true;
@@ -201,10 +197,8 @@ namespace CSSParser.TextReaderNavigators
 
 			public bool ExecuteCallbackIfTargetStillAlive(object sender, TEventArgs e)
 			{
-				if (sender == null)
-					throw new ArgumentNullException("sender");
-				if (e == null)
-					throw new ArgumentNullException("e");
+				// Note: Not checking for null "sender" or "e" references here since any contracts an event may have that these
+				// should or should not support nulls are not for us to deal with here
 
 				var target = _target.Target;
 				if (target == null)
