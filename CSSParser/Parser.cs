@@ -18,7 +18,7 @@ namespace CSSParser
 	{
 		/// <summary>
 		/// This will never return null nor a set containing any null references. It will throw an exception for a null content reference.
-		/// CSS does not support single line comment, unlike LESS CSS. The content parsing is deferred so that the work to parse the content
+		/// CSS does not support single line comments, unlike LESS CSS. The content parsing is deferred so that the work to parse the content
 		/// is only performed as the returned data is enumerated over. All runs of characters that are of the same CharacterCategorisationOptions
 		/// will be combined into one string (note: this means that runs of opening braces that aren't separated by whitespace will be combined
 		/// into one string containing those multiple braces).
@@ -28,7 +28,22 @@ namespace CSSParser
 			if (content == null)
 				throw new ArgumentNullException("content");
 
-			return Parse(content, false);
+			return Parse(GetStringNavigator(content), false);
+		}
+
+		/// <summary>
+		/// This will never return null nor a set containing any null references. It will throw an exception for a null content reference.
+		/// CSS does not support single line comments, unlike LESS CSS. The content parsing is deferred so that the work to parse the content
+		/// is only performed as the returned data is enumerated over. All runs of characters that are of the same CharacterCategorisationOptions
+		/// will be combined into one string (note: this means that runs of opening braces that aren't separated by whitespace will be combined
+		/// into one string containing those multiple braces).
+		/// </summary>
+		public static IEnumerable<CategorisedCharacterString> ParseCSS(IWalkThroughStrings stringNavigator)
+		{
+			if (stringNavigator == null)
+				throw new ArgumentNullException("stringNavigator");
+
+			return Parse(stringNavigator, false);
 		}
 
 		/// <summary>
@@ -43,19 +58,45 @@ namespace CSSParser
 			if (content == null)
 				throw new ArgumentNullException("content");
 
-			return Parse(content, true);
+			return Parse(GetStringNavigator(content), true);
 		}
 
-		private static IEnumerable<CategorisedCharacterString> Parse(string content, bool supportSingleLineComments)
+		/// <summary>
+		/// This will never return null nor a set containing any null references. It will throw an exception for a null content reference.
+		/// LESS CSS supports single line comments as well the multiline comment format supported by standard CSS. The content parsing is
+		/// deferred so that the work to parse the content is only performed as the returned data is enumerated over. All runs of characters
+		/// that are of the same CharacterCategorisationOptions will be combined into one string (note: this means that runs of opening braces
+		/// that aren't separated by whitespace will be combined into one string containing those multiple braces).
+		/// </summary>
+		public static IEnumerable<CategorisedCharacterString> ParseLESS(IWalkThroughStrings stringNavigator)
+		{
+			if (stringNavigator == null)
+				throw new ArgumentNullException("stringNavigator");
+
+			return Parse(stringNavigator, true);
+		}
+
+		private static IWalkThroughStrings GetStringNavigator(string content)
 		{
 			if (content == null)
 				throw new ArgumentNullException("content");
+
+			if (content == "")
+				return new GoneTooFarStringNavigator();
+
+			return new StringNavigator(content);
+		}
+
+		private static IEnumerable<CategorisedCharacterString> Parse(IWalkThroughStrings stringNavigator, bool supportSingleLineComments)
+		{
+			if (stringNavigator == null)
+				throw new ArgumentNullException("stringNavigator");
 
 			var processorFactory = new CachingCharacterProcessorsFactory(
 				new CharacterProcessorsFactory()
 			);
 			return (new ProcessedCharactersGrouper()).GetStrings(
-				(content == "") ? (IWalkThroughStrings)(new GoneTooFarStringNavigator()) : new StringNavigator(content),
+				stringNavigator,
 				processorFactory.Get<SelectorOrStylePropertySegment>(
 					supportSingleLineComments
 						? SelectorOrStyleSegment.SingleLineCommentsSupportOptions.Support
