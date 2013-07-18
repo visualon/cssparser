@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using CSSParser.ContentProcessors.CharacterProcessors;
 using CSSParser.ContentProcessors.CharacterProcessors.Factories;
 using CSSParser.ContentProcessors.StringProcessors;
 using CSSParser.StringNavigators;
+using CSSParser.TextReaderNavigators;
 
 namespace CSSParser
 {
@@ -38,6 +40,21 @@ namespace CSSParser
 		/// will be combined into one string (note: this means that runs of opening braces that aren't separated by whitespace will be combined
 		/// into one string containing those multiple braces).
 		/// </summary>
+		public static IEnumerable<CategorisedCharacterString> ParseCSS(TextReader reader)
+		{
+			if (reader == null)
+				throw new ArgumentNullException("reader");
+
+			return Parse(new TextReaderStringNavigator(reader), false);
+		}
+
+		/// <summary>
+		/// This will never return null nor a set containing any null references. It will throw an exception for a null content reference.
+		/// CSS does not support single line comments, unlike LESS CSS. The content parsing is deferred so that the work to parse the content
+		/// is only performed as the returned data is enumerated over. All runs of characters that are of the same CharacterCategorisationOptions
+		/// will be combined into one string (note: this means that runs of opening braces that aren't separated by whitespace will be combined
+		/// into one string containing those multiple braces).
+		/// </summary>
 		public static IEnumerable<CategorisedCharacterString> ParseCSS(IWalkThroughStrings stringNavigator)
 		{
 			if (stringNavigator == null)
@@ -59,6 +76,21 @@ namespace CSSParser
 				throw new ArgumentNullException("content");
 
 			return Parse(GetStringNavigator(content), true);
+		}
+
+		/// <summary>
+		/// This will never return null nor a set containing any null references. It will throw an exception for a null content reference.
+		/// LESS CSS supports single line comments as well the multiline comment format supported by standard CSS. The content parsing is
+		/// deferred so that the work to parse the content is only performed as the returned data is enumerated over. All runs of characters
+		/// that are of the same CharacterCategorisationOptions will be combined into one string (note: this means that runs of opening braces
+		/// that aren't separated by whitespace will be combined into one string containing those multiple braces).
+		/// </summary>
+		public static IEnumerable<CategorisedCharacterString> ParseLESS(TextReader reader)
+		{
+			if (reader == null)
+				throw new ArgumentNullException("reader");
+
+			return Parse(new TextReaderStringNavigator(reader), true);
 		}
 
 		/// <summary>
