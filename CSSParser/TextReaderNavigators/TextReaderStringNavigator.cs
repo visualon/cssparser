@@ -26,8 +26,9 @@ namespace CSSParser.TextReaderNavigators
 		/// TextReaderWithReadAheadEvent to return CurrentCharacter data without having to query the TextReaderWithReadAheadEvent (which won't be able
 		/// to help since it has progressed past the TextReaderStringNavigator's position). This mechanism can't prevent the source TextReader from being
 		/// progressed by another object with a reference to the TextReader but it does guarantee that all of the TextReaderStringNavigator instances will
-		/// have data consistent with the other TextReaderStringNavigator instances at all times. This consistency can only be guaranteed because the
-		/// TextReaderWithReadAheadEvent class is private and nested class and so it is ensured that no external reference to it can change its position.
+		/// have data consistent with the other TextReaderStringNavigator instances at all times. The TextReaderWithReadAheadEvent being private is an
+		/// extra layer of insurance that its Read method will not be called without the proper locks in place and should help ensure that a reference
+		/// to TextReaderWithReadAheadEvents can not be leaked out which could risk deadlocks as they are used as the synchronisation object.
 		/// </summary>
 		private TextReaderStringNavigator(TextReaderWithReadAheadEvent reader, int position, List<char> catchUpQueue)
 		{
@@ -122,10 +123,6 @@ namespace CSSParser.TextReaderNavigators
 			return new string(characters.ToArray());
 		}
 
-		/// <summary>
-		/// As described by the comment in the Next property's getter, this must be private to ensure that no reference to it can be leak out and so access
-		/// to its Read method may be tightly controlled so that we can ensure that required locks are always in place before moving the reader's position
-		/// </summary>
 		private class TextReaderWithReadAheadEvent
 		{
 			private readonly TextReader _reader;
