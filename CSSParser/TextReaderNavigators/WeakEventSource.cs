@@ -65,7 +65,11 @@ namespace CSSParser.TextReaderNavigators
 					removedAnyCallbacks = true;
 				}
 			}
-			return removedAnyCallbacks ? new WeakEventSource<TEventArgs>(e1CallbacksCopy) : e1;
+			if (!removedAnyCallbacks)
+				return e1;
+			if (e1CallbacksCopy.Count == 0)
+				return null;
+			return new WeakEventSource<TEventArgs>(e1CallbacksCopy);
 		}
 
 		private static IMakeEventCallbacks MakeWeak(EventHandler<TEventArgs> singleCastDelegate)

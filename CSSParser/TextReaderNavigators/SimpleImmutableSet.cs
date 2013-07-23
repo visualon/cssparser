@@ -22,6 +22,11 @@ namespace CSSParser.TextReaderNavigators
 			_data = data;
 		}
 
+		public int Count
+		{
+			get { return _data.Length; }
+		}
+
 		public SimpleImmutableSet<T> Add(T value)
 		{
 			var newData = new T[_data.Length + 1];
