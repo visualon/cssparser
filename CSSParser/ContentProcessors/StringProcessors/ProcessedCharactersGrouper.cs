@@ -40,8 +40,12 @@ namespace CSSParser.ContentProcessors.StringProcessors
 			var currentCharacterType = CharacterCategorisationOptions.SelectorOrStyleProperty;
 			var stringBuilder = new StringBuilder();
 			var currentCharacterIndex = 0;
-			while (contentWalker.CurrentCharacter != null)
+			while (true)
 			{
+				var character = contentWalker.CurrentCharacter;
+				if (character == null)
+					break;
+
 				var processResult = contentProcessor.Process(contentWalker);
 				if ((processResult.CharacterCategorisation != currentCharacterType) || CharacterTypesToNotGroup.Contains(processResult.CharacterCategorisation))
 				{
@@ -53,7 +57,7 @@ namespace CSSParser.ContentProcessors.StringProcessors
 					}
 					currentCharacterType = processResult.CharacterCategorisation;
 				}
-				stringBuilder.Append(contentWalker.CurrentCharacter);
+				stringBuilder.Append(character);
 
 				contentProcessor = processResult.NextProcessor;
 				contentWalker = contentWalker.Next;

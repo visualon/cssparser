@@ -87,8 +87,9 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 
 			// Is this the end of the section that the optionalCharacterCategorisationBehaviourOverride (if non-null) is concerned with? If so
 			// then drop back out to the character processor that handed control over to the optionalCharacterCategorisationBehaviourOverride.
+			var currentCharacter = stringNavigator.CurrentCharacter;
 			if ((_optionalCharacterCategorisationBehaviourOverride != null)
-			&& (stringNavigator.CurrentCharacter == _optionalCharacterCategorisationBehaviourOverride.EndOfBehaviourOverrideCharacter))
+			&& (currentCharacter == _optionalCharacterCategorisationBehaviourOverride.EndOfBehaviourOverrideCharacter))
 			{
 				return new CharacterProcessorResult(
 					_optionalCharacterCategorisationBehaviourOverride.CharacterCategorisation,
@@ -98,7 +99,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 
 			// Deal with other special characters (bearing in mind the altered interactions if optionalCharacterCategorisationBehaviourOverride
 			// is non-null)
-			if (stringNavigator.CurrentCharacter == '{')
+			if (currentCharacter == '{')
 			{
 				if (_optionalCharacterCategorisationBehaviourOverride != null)
 				{
@@ -112,7 +113,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 					GetSelectorOrStyleCharacterProcessor()
 				);
 			}
-			else if (stringNavigator.CurrentCharacter == '}')
+			else if (currentCharacter == '}')
 			{
 				if (_optionalCharacterCategorisationBehaviourOverride != null)
 				{
@@ -126,7 +127,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 					GetSelectorOrStyleCharacterProcessor()
 				);
 			}
-			else if (stringNavigator.CurrentCharacter == ';')
+			else if (currentCharacter == ';')
 			{
 				if (_optionalCharacterCategorisationBehaviourOverride != null)
 				{
@@ -140,7 +141,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 					GetSelectorOrStyleCharacterProcessor()
 				);
 			}
-			else if (stringNavigator.CurrentCharacter == ':')
+			else if (currentCharacter == ':')
 			{
 				if (_optionalCharacterCategorisationBehaviourOverride != null)
 				{
@@ -168,7 +169,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 					GetValueCharacterProcessor()
 				);
 			}
-			else if ((stringNavigator.CurrentCharacter != null) && char.IsWhiteSpace(stringNavigator.CurrentCharacter.Value))
+			else if ((currentCharacter != null) && char.IsWhiteSpace(currentCharacter.Value))
 			{
 				if (_optionalCharacterCategorisationBehaviourOverride != null)
 				{
@@ -185,14 +186,15 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 
 			// To deal with comments we use specialised comment-handling processors (even if an optionalCharacterCategorisationBehaviourOverride
 			// is specified we still treat deal with comments as normal, their content is not forced into a different categorisation)
-			if ((_singleLineCommentsSupportOptions == SingleLineCommentsSupportOptions.Support) && (stringNavigator.TryToGetCharacterString(2) == "//"))
+			var nextCharacter = stringNavigator.Next.CurrentCharacter;
+			if ((_singleLineCommentsSupportOptions == SingleLineCommentsSupportOptions.Support) && (currentCharacter == '/') && (nextCharacter == '/'))
 			{
 				return new CharacterProcessorResult(
 					CharacterCategorisationOptions.Comment,
 					_processorFactory.Get<SingleLineCommentSegment>(this, _processorFactory)
 				);
 			}
-			if (stringNavigator.TryToGetCharacterString(2) == "/*")
+			if ((currentCharacter == '/') && (nextCharacter == '*'))
 			{
 				return new CharacterProcessorResult(
 					CharacterCategorisationOptions.Comment,
@@ -212,7 +214,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 
 			// If we encounter quotes then we need to use the QuotedSegment which will keep track of where the quoted section end (taking
 			// into account any escape sequences)
-			if ((stringNavigator.CurrentCharacter == '"') || (stringNavigator.CurrentCharacter == '\''))
+			if ((currentCharacter == '"') || (currentCharacter == '\''))
 			{
 				// If an optionalCharacterCategorisationBehaviourOverride was specified then the content will be identified as whatever
 				// categorisation is specified by it, otherwise it will be identified as being CharacterCategorisationOptions.Value
@@ -221,7 +223,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 					return new CharacterProcessorResult(
 						_optionalCharacterCategorisationBehaviourOverride.CharacterCategorisation,
 						_processorFactory.Get<QuotedSegment>(
-							stringNavigator.CurrentCharacter.Value,
+							currentCharacter,
 							_optionalCharacterCategorisationBehaviourOverride.CharacterCategorisation,
 							this,
 							_processorFactory
@@ -231,7 +233,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 				return new CharacterProcessorResult(
 					CharacterCategorisationOptions.Value,
 					_processorFactory.Get<QuotedSegment>(
-						stringNavigator.CurrentCharacter.Value,
+						currentCharacter,
 						CharacterCategorisationOptions.Value,
 						GetValueCharacterProcessor(),
 						_processorFactory
@@ -246,9 +248,9 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			if (_processingType == ProcessingTypeOptions.StyleOrSelector)
 			{
 				char? closingBracket;
-				if (stringNavigator.CurrentCharacter == '[')
+				if (currentCharacter == '[')
 					closingBracket = ']';
-				else if (stringNavigator.CurrentCharacter == '(')
+				else if (currentCharacter == '(')
 					closingBracket = ')';
 				else
 					closingBracket = null;
@@ -299,8 +301,13 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 				throw new ArgumentNullException("stringNavigator");
 
 			// Skip over any whitespace to find the start of the next content
-			while ((stringNavigator.CurrentCharacter != null) && char.IsWhiteSpace(stringNavigator.CurrentCharacter.Value))
+			while (true)
+			{
+				var character = stringNavigator.CurrentCharacter;
+				if ((character == null) || !char.IsWhiteSpace(character.Value))
+					break;
 				stringNavigator = stringNavigator.Next;
+			}
 
 			// Determine whether that content (if there is any) matches any of the pseudo classes
 			foreach (var pseudoClassGroupedByLength in PseudoClasses.GroupBy(v => v.Length).Select(g => new { Length = g.Key, Values = g.ToArray() }).OrderBy(g => g.Length))

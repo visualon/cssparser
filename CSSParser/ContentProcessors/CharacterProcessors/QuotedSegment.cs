@@ -40,7 +40,8 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 
 			// If the next character is a backslash then the next character should be ignored if it's "special" and just considered
 			// to be another character in the Value string (particularly important if the next character is an escaped quote)
-			if (stringNavigator.CurrentCharacter == '\\')
+			var currentCharacter = stringNavigator.CurrentCharacter;
+			if (currentCharacter == '\\')
 			{
 				return new CharacterProcessorResult(
 					_characterCategorisation,
@@ -53,7 +54,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			}
 
 			// If this is the closing quote character then include it in the Value and then return to the previous processor
-			if (stringNavigator.CurrentCharacter == _quoteCharacter)
+			if (currentCharacter == _quoteCharacter)
 			{
 				return new CharacterProcessorResult(
 					_characterCategorisation,

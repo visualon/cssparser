@@ -23,14 +23,15 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			if (stringNavigator == null)
 				throw new ArgumentNullException("stringNavigator");
 
-			if (stringNavigator.CurrentCharacter == '{')
+			var currentCharacter = stringNavigator.CurrentCharacter;
+			if (currentCharacter == '{')
 			{
 				return new CharacterProcessorResult(
 					CharacterCategorisationOptions.OpenBrace,
 					_characterProcessorToReturnTo
 				);
 			}
-			else if ((stringNavigator.CurrentCharacter != null) && char.IsWhiteSpace(stringNavigator.CurrentCharacter.Value))
+			else if ((currentCharacter != null) && char.IsWhiteSpace(currentCharacter.Value))
 			{
 				return new CharacterProcessorResult(
 					CharacterCategorisationOptions.Whitespace,
