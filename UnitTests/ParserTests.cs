@@ -177,6 +177,49 @@ namespace UnitTests
 			);
 		}
 
+		[Fact]
+		public void MediaQueryCriteriaShouldBeIdentifiedAsSelectorContent()
+		{
+			var content = "@media screen and (min-width: 600px) { body { background: white url(\"awesomecats.png\") no-repeat; } }";
+			var expected = new CategorisedCharacterString[]
+			{
+				new CategorisedCharacterString("@media", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 6, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("screen", 7, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 13, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("and", 14, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 17, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("(min-width:", 18, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 29, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("600px)", 30, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 36, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("{", 37, CharacterCategorisationOptions.OpenBrace),
+				new CategorisedCharacterString(" ", 38, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("body", 39, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 43, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("{", 44, CharacterCategorisationOptions.OpenBrace),
+				new CategorisedCharacterString(" ", 45, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("background", 46, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(":", 56, CharacterCategorisationOptions.StylePropertyColon),
+				new CategorisedCharacterString(" ", 57, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("white", 58, CharacterCategorisationOptions.Value),
+				new CategorisedCharacterString(" ", 63, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("url(\"awesomecats.png\")", 64, CharacterCategorisationOptions.Value),
+				new CategorisedCharacterString(" ", 86, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("no-repeat", 87, CharacterCategorisationOptions.Value),
+				new CategorisedCharacterString(";", 96, CharacterCategorisationOptions.SemiColon),
+				new CategorisedCharacterString(" ", 97, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("}", 98, CharacterCategorisationOptions.CloseBrace),
+				new CategorisedCharacterString(" ", 99, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("}", 100, CharacterCategorisationOptions.CloseBrace)
+			};
+			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
+				expected,
+				Parser.ParseLESS(content),
+				new ParsedContentComparer()
+			);
+		}
+
 		private class ParsedContentComparer : IEqualityComparer<IEnumerable<CategorisedCharacterString>>
 		{
 			public bool Equals(IEnumerable<CategorisedCharacterString> x, IEnumerable<CategorisedCharacterString> y)
