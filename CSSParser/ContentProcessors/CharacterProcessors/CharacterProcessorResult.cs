@@ -6,7 +6,14 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 	{
 		public CharacterProcessorResult(CharacterCategorisationOptions characterCategorisation, IProcessCharacters nextProcessor)
 		{
-			if (!Enum.IsDefined(typeof(CharacterCategorisationOptions), characterCategorisation))
+			if ((characterCategorisation != CharacterCategorisationOptions.CloseBrace)
+			&& (characterCategorisation != CharacterCategorisationOptions.Comment)
+			&& (characterCategorisation != CharacterCategorisationOptions.OpenBrace)
+			&& (characterCategorisation != CharacterCategorisationOptions.SemiColon)
+			&& (characterCategorisation != CharacterCategorisationOptions.SelectorOrStyleProperty)
+			&& (characterCategorisation != CharacterCategorisationOptions.StylePropertyColon)
+			&& (characterCategorisation != CharacterCategorisationOptions.Value)
+			&& (characterCategorisation != CharacterCategorisationOptions.Whitespace))
 				throw new ArgumentOutOfRangeException("characterCategorisation");
 			if (nextProcessor == null)
 				throw new ArgumentNullException("nextProcessor");
