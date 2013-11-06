@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using CSSParser.ContentProcessors.CharacterProcessors.Factories;
 using CSSParser.StringNavigators;
 
@@ -204,7 +205,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 
 			// Although media query declarations will be marked as SelectorOrStyleProperty content, special handling is required to ensure that
 			// any colons that exist in it are identified as part of the SelectorOrStyleProperty and not marked as a StylePropertyColon
-			if ((_processingType == ProcessingTypeOptions.StyleOrSelector) && stringNavigator.TryToGetCharacterString(6).Equals("@media", StringComparison.InvariantCultureIgnoreCase))
+			if ((_processingType == ProcessingTypeOptions.StyleOrSelector) && stringNavigator.DoesCurrentContentMatch("@media"))
 			{
 				return new CharacterProcessorResult(
 					CharacterCategorisationOptions.SelectorOrStyleProperty,
@@ -310,20 +311,27 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			}
 
 			// Determine whether that content (if there is any) matches any of the pseudo classes
-			foreach (var pseudoClassGroupedByLength in PseudoClasses.GroupBy(v => v.Length).Select(g => new { Length = g.Key, Values = g.ToArray() }).OrderBy(g => g.Length))
-			{
-				var content = stringNavigator.TryToGetCharacterString(pseudoClassGroupedByLength.Length);
-				if (content.Length < pseudoClassGroupedByLength.Length)
-				{
-					// There is not enough content remaining in the string navigator for this group or any following group, since they are ordered by length
-					return false;
-				}
-				if (pseudoClassGroupedByLength.Values.Contains(content))
-					return true;
-			}
-			return false;
+			return PseudoClasses.Any(c => stringNavigator.DoesCurrentContentMatch(c));
 		}
 
-		private static readonly string[] PseudoClasses = new[] { "link", "visited", "active", "hover", "focus", "first-letter", "first-line", "first-child", "before", "after", "lang" };
+		/// <summary>
+		/// These are ordered by length as a very minor optimisation, it may allow matches to occur more quickly since less characters may have to be tested
+		/// (to be honest, it would probably make more sense to arrange them in order of likelihood that they will appear and the most expensive case is when
+		/// none of them are present and no ordering will help with that)
+		/// </summary>
+		private static readonly ReadOnlyCollection<string> PseudoClasses = new List<string>
+		{
+			"lang",
+			"link",
+			"after",
+			"focus",
+			"hover",
+			"active",
+			"before",
+			"visited",
+			"first-line",
+			"first-child",
+			"first-letter"
+		}.AsReadOnly();
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CSSParser.StringNavigators
 {
@@ -38,25 +39,32 @@ namespace CSSParser.StringNavigators
 		}
 
 		/// <summary>
-		/// This will try to extract a string of length requiredNumberOfCharacters from the current position in the string navigator. If there are insufficient
-		/// characters available, then a string containing all of the remaining characters will be returned. This will be an empty string if there is no more
-		/// content to deliver. This will never return null.
+		/// This will return true if the content is at least as long as the specified value string and if the next n characters (where n is the length of
+		/// the value string) correspond to each of the value string's characters. This testing will be done according to the optionalComparer if non-null
+		/// and will apply a simple char comparison (precise) match if a null optionalComparer is specified. An exception will be raised for a null or
+		/// blank value. If there is insufficient content available to match the length of the value argument then false will be returned.
 		/// </summary>
-		public string TryToGetCharacterString(int requiredNumberOfCharacters)
+		public bool DoesCurrentContentMatch(string value, IEqualityComparer<char> optionalComparer)
 		{
-			if (requiredNumberOfCharacters <= 0)
-				throw new ArgumentOutOfRangeException("requiredNumberOfCharacters", "must be greater than zero");
+			if (string.IsNullOrEmpty(value))
+				throw new ArgumentException("Null/blank value specified");
 
-			if ((_index + requiredNumberOfCharacters) > _value.Length)
+			if ((_index + value.Length) > _value.Length)
+				return false;
+
+			for (var index = 0; index < value.Length; index++)
 			{
-				requiredNumberOfCharacters = _value.Length - _index;
-				if (requiredNumberOfCharacters == 0)
-					return "";
+				var contentCharacter = _value[_index + index];
+				var compareToCharacter = value[index];
+				if (optionalComparer == null)
+				{
+					if (contentCharacter != compareToCharacter)
+						return false;
+				}
+				else if (!optionalComparer.Equals(contentCharacter, compareToCharacter))
+					return false;
 			}
-
-			var result = new char[requiredNumberOfCharacters];
-			Array.Copy(_value, _index, result, 0, requiredNumberOfCharacters);
-			return new string(result);
+			return true;
 		}
 	}
 }
