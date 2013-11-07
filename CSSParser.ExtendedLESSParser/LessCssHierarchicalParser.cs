@@ -5,6 +5,7 @@ using System.Text;
 using CSSParser.ContentProcessors;
 using CSSParser.ContentProcessors.StringProcessors;
 using CSSParser.ExtendedLESSParser.ContentSections;
+using CSSParser.ExtendedLESSParser.Misc;
 
 namespace CSSParser.ExtendedLESSParser
 {
@@ -232,12 +233,9 @@ namespace CSSParser.ExtendedLESSParser
 			if (string.IsNullOrWhiteSpace(selectors))
 				throw new ArgumentException("Null/blank selectors specified");
 
+			// Using the SelectorBreaker means that any quoting, square brackets or other escaping is taken into account
 			return new Selector.SelectorSet(
-				selectors
-					.Split(',')
-					.Select(s => s.Trim())
-					.Where(s => s != "")
-					.Select(s => new Selector.WhiteSpaceNormalisedString(s))
+				SelectorBreaker.Break(selectors).Select(s => new Selector.WhiteSpaceNormalisedString(string.Join(" ", s)))
 			);
 		}
 

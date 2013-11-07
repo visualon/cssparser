@@ -45,6 +45,7 @@
     <Compile Include="ContentSections\Selector.cs" />
     <Compile Include="ContentSections\StylePropertyName.cs" />
     <Compile Include="ContentSections\ICSSFragment.cs" />
+    <Compile Include="Misc\SelectorBreaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
