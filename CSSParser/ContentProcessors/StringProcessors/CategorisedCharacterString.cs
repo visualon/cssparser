@@ -10,7 +10,15 @@ namespace CSSParser.ContentProcessors.StringProcessors
 				throw new ArgumentException("Null/blank value specified");
 			if (indexInSource < 0)
 				throw new ArgumentOutOfRangeException("indexInSource", "must be zero or greater");
-			if (!Enum.IsDefined(typeof(CharacterCategorisationOptions), characterCategorisation))
+
+			if ((characterCategorisation != CharacterCategorisationOptions.CloseBrace)
+			&& (characterCategorisation != CharacterCategorisationOptions.Comment)
+			&& (characterCategorisation != CharacterCategorisationOptions.OpenBrace)
+			&& (characterCategorisation != CharacterCategorisationOptions.SemiColon)
+			&& (characterCategorisation != CharacterCategorisationOptions.SelectorOrStyleProperty)
+			&& (characterCategorisation != CharacterCategorisationOptions.StylePropertyColon)
+			&& (characterCategorisation != CharacterCategorisationOptions.Value)
+			&& (characterCategorisation != CharacterCategorisationOptions.Whitespace))
 				throw new ArgumentOutOfRangeException("characterCategorisation");
 
 			Value = value;

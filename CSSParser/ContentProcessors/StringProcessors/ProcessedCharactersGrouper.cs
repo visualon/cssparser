@@ -17,13 +17,6 @@ namespace CSSParser.ContentProcessors.StringProcessors
 	/// </summary>
 	public class ProcessedCharactersGrouper : ICollectStringsOfProcessedCharacters
 	{
-		private static CharacterCategorisationOptions[] CharacterTypesToNotGroup = new[]
-		{
-			CharacterCategorisationOptions.CloseBrace,
-			CharacterCategorisationOptions.OpenBrace,
-			CharacterCategorisationOptions.SemiColon
-		};
-
 		/// <summary>
 		/// This will never return null nor a set containing any null references. It will throw an exception for null contentWalker or contentProcessor
 		/// references or it the processing failed.
@@ -46,8 +39,12 @@ namespace CSSParser.ContentProcessors.StringProcessors
 				if (character == null)
 					break;
 
+				// CloseBrace, OpenBrace and SemiColons constitute "CharacterTypesToNotGroup"
 				var processResult = contentProcessor.Process(contentWalker);
-				if ((processResult.CharacterCategorisation != currentCharacterType) || CharacterTypesToNotGroup.Contains(processResult.CharacterCategorisation))
+				if ((processResult.CharacterCategorisation != currentCharacterType)
+				|| (processResult.CharacterCategorisation == CharacterCategorisationOptions.CloseBrace)
+				|| (processResult.CharacterCategorisation == CharacterCategorisationOptions.OpenBrace)
+				|| (processResult.CharacterCategorisation == CharacterCategorisationOptions.SemiColon))
 				{
 					if (stringBuilder.Length > 0)
 					{
