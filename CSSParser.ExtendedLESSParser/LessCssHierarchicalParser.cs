@@ -30,15 +30,18 @@ namespace CSSParser.ExtendedLESSParser
 				if ((segment.CharacterCategorisation != CharacterCategorisationOptions.Comment)
 				&& (segment.CharacterCategorisation != CharacterCategorisationOptions.Whitespace))
 				{
-					var lastFragment = parsedData.LastOrDefault();
+					var lastFragment = parsedData.Item1.LastOrDefault();
 					var lastFragmentLineIndex = (lastFragment == null) ? 0 : lastFragment.SourceLineIndex;
 					throw new ArgumentException("Encountered unparsable data, this indicates content (after line " + (lastFragmentLineIndex + 1) + ")");
 				}
 			}
-			return parsedData;
+			return parsedData.Item1;
 		}
 
-		private static IEnumerable<ICSSFragment> ParseIntoStructuredData(
+		/// <summary>
+		/// This returns the parsed fragments and the number of lines that were processed from the source in doing so
+		/// </summary>
+		private static Tuple<IEnumerable<ICSSFragment>, int> ParseIntoStructuredData(
 			IEnumerator<CategorisedCharacterString> segmentEnumerator,
 			IEnumerable<Selector.SelectorSet> parentSelectors,
 			int sourceLineIndex)
@@ -50,6 +53,7 @@ namespace CSSParser.ExtendedLESSParser
 			if (sourceLineIndex < 0)
 				throw new ArgumentNullException("sourceLineIndex", "must be zero or greater");
 
+			var startingSourceLineIndex = sourceLineIndex;
 			var fragments = new List<ICSSFragment>();
 			var selectorOrStyleContentBuffer = new StringBuilder();
 			var selectorOrStyleStartSourceLineIndex = -1;
@@ -94,13 +98,14 @@ namespace CSSParser.ExtendedLESSParser
 							fragments.Add(stylePropertyValueBuffer.ExtractCombinedContentAndClear());
 
 						var selectors = GetSelectorSet(selectorOrStyleContentBuffer.ToString());
+						var parsedNestedContentDetails = ParseIntoStructuredData(segmentEnumerator, parentSelectors.Concat(new[] { selectors }), sourceLineIndex);
 						if (selectors.First().Value.StartsWith("@media", StringComparison.InvariantCultureIgnoreCase))
 						{
 							fragments.Add(new MediaQuery(
 								selectors,
 								parentSelectors,
 								selectorOrStyleStartSourceLineIndex,
-								ParseIntoStructuredData(segmentEnumerator, parentSelectors.Concat(new[] { selectors }), sourceLineIndex)
+								parsedNestedContentDetails.Item1 // Item1 are the processed fragments (Item2 is the number of lines processed to extract those fragments)
 							));
 						}
 						else
@@ -109,9 +114,10 @@ namespace CSSParser.ExtendedLESSParser
 								selectors,
 								parentSelectors,
 								selectorOrStyleStartSourceLineIndex,
-								ParseIntoStructuredData(segmentEnumerator, parentSelectors.Concat(new[] { selectors }), sourceLineIndex)
+								parsedNestedContentDetails.Item1 // Item1 are the processed fragments (Item2 is the number of lines processed to extract those fragments)
 							));
 						}
+						sourceLineIndex += parsedNestedContentDetails.Item2; // Increase sourceLineIndex by the number of lines that the recursive call processed
 						selectorOrStyleContentBuffer.Clear();
 						continue;
 
@@ -128,7 +134,7 @@ namespace CSSParser.ExtendedLESSParser
 								selectorOrStyleStartSourceLineIndex
 							));
 						}
-						return fragments;
+						return Tuple.Create<IEnumerable<ICSSFragment>, int>(fragments, sourceLineIndex - startingSourceLineIndex);
 
 					case CharacterCategorisationOptions.StylePropertyColon:
 					case CharacterCategorisationOptions.SemiColon:
@@ -225,7 +231,7 @@ namespace CSSParser.ExtendedLESSParser
 			if (stylePropertyValueBuffer.HasContent)
 				fragments.Add(stylePropertyValueBuffer.ExtractCombinedContentAndClear());
 
-			return fragments;
+			return Tuple.Create<IEnumerable<ICSSFragment>, int>(fragments, sourceLineIndex - startingSourceLineIndex);
 		}
 
 		private static Selector.SelectorSet GetSelectorSet(string selectors)
