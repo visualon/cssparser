@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentSections\ContainerFragment.cs" />
+    <Compile Include="ContentSections\Comment.cs" />
     <Compile Include="ContentSections\Import.cs" />
     <Compile Include="ContentSections\MediaQuery.cs" />
     <Compile Include="ContentSections\StylePropertyValue.cs" />

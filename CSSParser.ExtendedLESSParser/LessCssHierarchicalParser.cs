@@ -17,13 +17,17 @@ namespace CSSParser.ExtendedLESSParser
 	/// </summary>
 	public static class LessCssHierarchicalParser
 	{
-		public static IEnumerable<ICSSFragment> ParseIntoStructuredData(IEnumerable<CategorisedCharacterString> segments)
+		public static IEnumerable<ICSSFragment> ParseIntoStructuredData(
+			IEnumerable<CategorisedCharacterString> segments,
+			CommentHandlingOptions commentHandling = CommentHandlingOptions.Exclude)
 		{
 			if (segments == null)
 				throw new ArgumentNullException("segments");
+			if (!Enum.IsDefined(typeof(CommentHandlingOptions), commentHandling))
+				throw new ArgumentOutOfRangeException("commentHandling");
 
 			var segmentEnumerator = segments.GetEnumerator();
-			var parsedData = ParseIntoStructuredData(segmentEnumerator, new Selector.SelectorSet[0], 0);
+			var parsedData = ParseIntoStructuredData(segmentEnumerator, new Selector.SelectorSet[0], 0, commentHandling);
 			while (segmentEnumerator.MoveNext())
 			{
 				var segment = segmentEnumerator.Current;
@@ -38,13 +42,20 @@ namespace CSSParser.ExtendedLESSParser
 			return parsedData.Item1;
 		}
 
+		public enum CommentHandlingOptions
+		{
+			Exclude,
+			Include
+		}
+
 		/// <summary>
 		/// This returns the parsed fragments and the number of lines that were processed from the source in doing so
 		/// </summary>
 		private static Tuple<IEnumerable<ICSSFragment>, int> ParseIntoStructuredData(
 			IEnumerator<CategorisedCharacterString> segmentEnumerator,
 			IEnumerable<Selector.SelectorSet> parentSelectors,
-			int sourceLineIndex)
+			int sourceLineIndex,
+			CommentHandlingOptions commentHandling)
 		{
 			if (segmentEnumerator == null)
 				throw new ArgumentNullException("segmentEnumerator");
@@ -52,6 +63,8 @@ namespace CSSParser.ExtendedLESSParser
 				throw new ArgumentNullException("parentSelectors");
 			if (sourceLineIndex < 0)
 				throw new ArgumentNullException("sourceLineIndex", "must be zero or greater");
+			if (!Enum.IsDefined(typeof(CommentHandlingOptions), commentHandling))
+				throw new ArgumentOutOfRangeException("commentHandling");
 
 			var startingSourceLineIndex = sourceLineIndex;
 			var fragments = new List<ICSSFragment>();
@@ -68,6 +81,8 @@ namespace CSSParser.ExtendedLESSParser
 				switch (segment.CharacterCategorisation)
 				{
 					case CharacterCategorisationOptions.Comment:
+						if (commentHandling == CommentHandlingOptions.Include)
+							fragments.Add(new Comment(segment.Value, sourceLineIndex));
 						sourceLineIndex += GetNumberOfLineReturnsFromContentIfAny(segment.Value);
 						continue;
 
@@ -98,7 +113,7 @@ namespace CSSParser.ExtendedLESSParser
 							fragments.Add(stylePropertyValueBuffer.ExtractCombinedContentAndClear());
 
 						var selectors = GetSelectorSet(selectorOrStyleContentBuffer.ToString());
-						var parsedNestedContentDetails = ParseIntoStructuredData(segmentEnumerator, parentSelectors.Concat(new[] { selectors }), sourceLineIndex);
+						var parsedNestedContentDetails = ParseIntoStructuredData(segmentEnumerator, parentSelectors.Concat(new[] { selectors }), sourceLineIndex, commentHandling);
 						if (selectors.First().Value.StartsWith("@media", StringComparison.InvariantCultureIgnoreCase))
 						{
 							fragments.Add(new MediaQuery(
