@@ -13,7 +13,9 @@ namespace CSSParser.ExtendedLESSParser
 	/// This will take the data returned from the CSSParser.Parser methods and process it further into a hierarchical set of ICSSFragment instances
 	/// where each fragment is a selector (which may represent a css selector - eg. "div.Header" - or media query) or style property names and
 	/// values within the selectors. Selectors may be nested in the case of selectors within media queries or selectors nested within other
-	/// selectors (as enabled by LESS CSS).
+	/// selectors (as enabled by LESS CSS). Comments are optionally included in the returned data - they are optional since they are not
+	/// strictly part of the structured data but also because they weren't previously included in the returned data and so it may have
+	/// been a breaking change to enforce their inclusion.
 	/// </summary>
 	public static class LessCssHierarchicalParser
 	{
