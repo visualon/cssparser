@@ -1,32 +1,63 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using CSSParser;
-using CSSParser.ContentProcessors;
 using CSSParser.ContentProcessors.StringProcessors;
 using Xunit;
 
 namespace UnitTests
 {
-	/// <summary>
-	/// These are closer to integration tests since they don't really target specific components of the parsing chain, but they're a start!
-	/// </summary>
-	public class ParserTests
-	{
+    public class LessParserTests
+    {
+        [Fact]
+        public void NullString()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                Parser.ParseLESS((string)null);
+            });
+        }
+
+        [Fact]
+        public void BlankContent()
+        {
+            Assert.Equal(
+                new CategorisedCharacterString[0],
+                Parser.ParseLESS(""),
+                new CategorisedCharacterStringComparer()
+            );
+        }
+
+        [Fact]
+        public void EmptyBodyTagOnSingleLine()
+        {
+            var content = "body { }";
+            var expected = new CategorisedCharacterString[]
+            {
+                CSS.SelectorOrStyleProperty("body", 0),
+                CSS.Whitespace(" ", 4),
+                CSS.OpenBrace(5),
+                CSS.Whitespace(" ", 6),
+                CSS.CloseBrace(7)
+            };
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
+
         [Fact]
         public void TerminatingLineReturnIsPartOfSingleLineComment()
         {
             var content = "// Comment\nbody { }";
             var expected = new CategorisedCharacterString[]
 			{
-				new CategorisedCharacterString("// Comment\n", 0, CharacterCategorisationOptions.Comment),
-				new CategorisedCharacterString("body", 11, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 15, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("{", 16, CharacterCategorisationOptions.OpenBrace),
-				new CategorisedCharacterString(" ", 17, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("}", 18, CharacterCategorisationOptions.CloseBrace)
+                CSS.Comment("// Comment\n", 0),
+                CSS.SelectorOrStyleProperty("body", 11),
+                CSS.Whitespace(" ", 15),
+                CSS.OpenBrace(16),
+                CSS.Whitespace(" ", 17),
+                CSS.CloseBrace(18)
 			};
-            var actual = Parser.ParseLESS(content).ToArray(); // TODO
             Assert.Equal(
                 expected,
                 Parser.ParseLESS(content),
@@ -40,15 +71,14 @@ namespace UnitTests
             var content = "/* Comment */\nbody { }";
             var expected = new CategorisedCharacterString[]
 			{
-				new CategorisedCharacterString("/* Comment */", 0, CharacterCategorisationOptions.Comment),
-				new CategorisedCharacterString("\n", 13, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("body", 14, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 18, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("{", 19, CharacterCategorisationOptions.OpenBrace),
-				new CategorisedCharacterString(" ", 20, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("}", 21, CharacterCategorisationOptions.CloseBrace)
+                CSS.Comment("/* Comment */", 0),
+                CSS.Whitespace("\n", 13),
+                CSS.SelectorOrStyleProperty("body", 14),
+                CSS.Whitespace(" ", 18),
+                CSS.OpenBrace(19),
+                CSS.Whitespace(" ", 20),
+                CSS.CloseBrace(21)
 			};
-            var actual = Parser.ParseLESS(content).ToArray(); // TODO
             Assert.Equal(
                 expected,
                 Parser.ParseLESS(content),
@@ -56,275 +86,214 @@ namespace UnitTests
             );
         }
 
+        [Fact]
+        public void PseudoClassesShouldNotBeIdentifiedAsPropertyValues()
+        {
+            var content = "a:hover { color: blue; }";
+            var expected = new CategorisedCharacterString[]
+            {
+                CSS.SelectorOrStyleProperty("a:hover", 0),
+                CSS.Whitespace(" ", 7),
+                CSS.OpenBrace(8),
+                CSS.Whitespace(" ", 9),
+                CSS.SelectorOrStyleProperty("color", 10),
+                CSS.StylePropertyColon(15),
+                CSS.Whitespace(" ", 16),
+                CSS.Value("blue", 17),
+                CSS.SemiColon(21),
+                CSS.Whitespace(" ", 22),
+                CSS.CloseBrace(23)
+            };
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
 
+        [Fact]
+        public void AttributeSelectorsShouldNotBeIdentifiedAsPropertyValues()
+        {
+            var content = "a[href] { }";
+            var expected = new CategorisedCharacterString[]
+            {
+                CSS.SelectorOrStyleProperty("a[href]", 0),
+                CSS.Whitespace(" ", 7),
+                CSS.OpenBrace(8),
+                CSS.Whitespace(" ", 9),
+                CSS.CloseBrace(10)
+            };
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
 
+        [Fact]
+        public void AttributeSelectorsWithQuotedContentShouldNotBeIdentifiedAsPropertyValues()
+        {
+            var content = "input[type=\"text\"] { color: blue; }";
+            var expected = new CategorisedCharacterString[]
+            {
+                CSS.SelectorOrStyleProperty("input[type=\"text\"]", 0),
+                CSS.Whitespace(" ", 18),
+                CSS.OpenBrace(19),
+                CSS.Whitespace(" ", 20),
+                CSS.SelectorOrStyleProperty("color", 21),
+                CSS.StylePropertyColon(26),
+                CSS.Whitespace(" ", 27),
+                CSS.Value("blue", 28),
+                CSS.SemiColon(32),
+                CSS.Whitespace(" ", 33),
+                CSS.CloseBrace(34)
+            };
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
 
+        [Fact]
+        public void LESSMixinArgumentDefaultsShouldNotBeIdentifiedAsPropertyValues()
+        {
+            var content = ".RoundedCorners (@radius: 4px) { border-radius: @radius; }";
+            var expected = new CategorisedCharacterString[]
+            {
+                CSS.SelectorOrStyleProperty(".RoundedCorners", 0),
+                CSS.Whitespace(" ", 15),
+                CSS.SelectorOrStyleProperty("(@radius: 4px)", 16),
+                CSS.Whitespace(" ", 30),
+                CSS.OpenBrace(31),
+                CSS.Whitespace(" ", 32),
+                CSS.SelectorOrStyleProperty("border-radius", 33),
+                CSS.StylePropertyColon(46),
+                CSS.Whitespace(" ", 47),
+                CSS.Value("@radius", 48),
+                CSS.SemiColon(55),
+                CSS.Whitespace(" ", 56),
+                CSS.CloseBrace(57)
+            };
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
 
+        [Fact]
+        public void PseudoClassesShouldNotBeIdentifiedAsPropertyValuesWhenMinified()
+        {
+            var content = "a:hover{color:blue}";
+            var expected = new CategorisedCharacterString[]
+            {
+                CSS.SelectorOrStyleProperty("a:hover", 0),
+                CSS.OpenBrace(7),
+                CSS.SelectorOrStyleProperty("color", 8),
+                CSS.StylePropertyColon(13),
+                CSS.Value("blue", 14),
+                CSS.CloseBrace(18)
+            };
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
 
+        [Fact]
+        public void PseudoClassesShouldNotBeIdentifiedAsPropertyValuesWhenWhitespaceIsPresentAroundTheColon()
+        {
+            var content = "a : hover{}";
+            var expected = new CategorisedCharacterString[]
+            {
+                CSS.SelectorOrStyleProperty("a", 0),
+                CSS.Whitespace(" ", 1),
+                CSS.SelectorOrStyleProperty(":", 2),
+                CSS.Whitespace(" ", 3),
+                CSS.SelectorOrStyleProperty("hover", 4),
+                CSS.OpenBrace(9),
+                CSS.CloseBrace(10)
+            };
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
 
+        [Fact]
+        public void EndOfQuotedStylePropertyMayNotBeEndOfEntryStyleProperty()
+        {
+            var content = "body { font-family: \"Segoe UI\", Verdana; }";
+            var expected = new CategorisedCharacterString[]
+            {
+                CSS.SelectorOrStyleProperty("body", 0),
+                CSS.Whitespace(" ", 4),
+                CSS.OpenBrace(5),
+                CSS.Whitespace(" ", 6),
+                CSS.SelectorOrStyleProperty("font-family", 7),
+                CSS.StylePropertyColon(18),
+                CSS.Whitespace(" ", 19),
+                CSS.Value("\"Segoe UI\",", 20),
+                CSS.Whitespace(" ", 31),
+                CSS.Value("Verdana", 32),
+                CSS.SemiColon(39),
+                CSS.Whitespace(" ", 40),
+                CSS.CloseBrace(41)
+            };
 
+            Assert.Equal(
+                expected,
 
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
 
+        [Fact]
+        public void MediaQueryCriteriaShouldBeIdentifiedAsSelectorContent()
+        {
+            var content = "@media screen and (min-width: 600px) { body { background: white url(\"awesomecats.png\") no-repeat; } }";
+            var expected = new CategorisedCharacterString[]
+            {
+                CSS.SelectorOrStyleProperty("@media", 0),
+                CSS.Whitespace(" ", 6),
+                CSS.SelectorOrStyleProperty("screen", 7),
+                CSS.Whitespace(" ", 13),
+                CSS.SelectorOrStyleProperty("and", 14),
+                CSS.Whitespace(" ", 17),
+                CSS.SelectorOrStyleProperty("(min-width:", 18),
+                CSS.Whitespace(" ", 29),
+                CSS.SelectorOrStyleProperty("600px)", 30),
+                CSS.Whitespace(" ", 36),
+                CSS.OpenBrace(37),
+                CSS.Whitespace(" ", 38),
+                CSS.SelectorOrStyleProperty("body", 39),
+                CSS.Whitespace(" ", 43),
+                CSS.OpenBrace(44),
+                CSS.Whitespace(" ", 45),
+                CSS.SelectorOrStyleProperty("background", 46),
+                CSS.StylePropertyColon(56),
+                CSS.Whitespace(" ", 57),
+                CSS.Value("white", 58),
+                CSS.Whitespace(" ", 63),
+                CSS.Value("url(\"awesomecats.png\")", 64),
+                CSS.Whitespace(" ", 86),
+                CSS.Value("no-repeat", 87),
+                CSS.SemiColon(96),
+                CSS.Whitespace(" ", 97),
+                CSS.CloseBrace(98),
+                CSS.Whitespace(" ", 99),
+                CSS.CloseBrace(100)
+            };
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		[Fact]
-		public void PseudoClassesShouldNotBeIdentifiedAsPropertyValues()
-		{
-			var content = "a:hover { color: blue; }";
-			var expected = new CategorisedCharacterString[]
-			{
-				new CategorisedCharacterString("a:hover", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 7, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("{", 8, CharacterCategorisationOptions.OpenBrace),
-				new CategorisedCharacterString(" ", 9, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("color", 10, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(":", 15, CharacterCategorisationOptions.StylePropertyColon),
-				new CategorisedCharacterString(" ", 16, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("blue", 17, CharacterCategorisationOptions.Value),
-				new CategorisedCharacterString(";", 21, CharacterCategorisationOptions.SemiColon),
-				new CategorisedCharacterString(" ", 22, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("}", 23, CharacterCategorisationOptions.CloseBrace)
-			};
-			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
-				expected,
-				Parser.ParseLESS(content),
-				new ParsedContentComparer()
-			);
-		}
-
-		[Fact]
-		public void AttributeSelectorsShouldNotBeIdentifiedAsPropertyValues()
-		{
-			var content = "a[href] { }";
-			var expected = new CategorisedCharacterString[]
-			{
-				new CategorisedCharacterString("a[href]", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 7, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("{", 8, CharacterCategorisationOptions.OpenBrace),
-				new CategorisedCharacterString(" ", 9, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("}", 10, CharacterCategorisationOptions.CloseBrace)
-			};
-			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
-				expected,
-				Parser.ParseLESS(content),
-				new ParsedContentComparer()
-			);
-		}
-
-		[Fact]
-		public void AttributeSelectorsWithQuotedContentShouldNotBeIdentifiedAsPropertyValues()
-		{
-			var content = "input[type=\"text\"] { color: blue; }";
-			var expected = new CategorisedCharacterString[]
-			{
-				new CategorisedCharacterString("input[type=\"text\"]", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 18, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("{", 19, CharacterCategorisationOptions.OpenBrace),
-				new CategorisedCharacterString(" ", 20, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("color", 21, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(":", 26, CharacterCategorisationOptions.StylePropertyColon),
-				new CategorisedCharacterString(" ", 27, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("blue", 28, CharacterCategorisationOptions.Value),
-				new CategorisedCharacterString(";", 32, CharacterCategorisationOptions.SemiColon),
-				new CategorisedCharacterString(" ", 33, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("}", 34, CharacterCategorisationOptions.CloseBrace)
-			};
-			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
-				expected,
-				Parser.ParseLESS(content),
-				new ParsedContentComparer()
-			);
-		}
-
-		[Fact]
-		public void LESSMixinArgumentDefaultsShouldNotBeIdentifiedAsPropertyValues()
-		{
-			var content = ".RoundedCorners (@radius: 4px) { border-radius: @radius; }";
-			var expected = new CategorisedCharacterString[]
-			{
-				new CategorisedCharacterString(".RoundedCorners", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 15, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("(@radius: 4px)", 16, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 30, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("{", 31, CharacterCategorisationOptions.OpenBrace),
-				new CategorisedCharacterString(" ", 32, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("border-radius", 33, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(":", 46, CharacterCategorisationOptions.StylePropertyColon),
-				new CategorisedCharacterString(" ", 47, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("@radius", 48, CharacterCategorisationOptions.Value),
-				new CategorisedCharacterString(";", 55, CharacterCategorisationOptions.SemiColon),
-				new CategorisedCharacterString(" ", 56, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("}", 57, CharacterCategorisationOptions.CloseBrace)
-			};
-			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
-				expected,
-				Parser.ParseLESS(content),
-				new ParsedContentComparer()
-			);
-		}
-
-		[Fact]
-		public void PseudoClassesShouldNotBeIdentifiedAsPropertyValuesWhenMinified()
-		{
-			var content = "a:hover{color:blue}";
-			var expected = new CategorisedCharacterString[]
-			{
-				new CategorisedCharacterString("a:hover", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString("{", 7, CharacterCategorisationOptions.OpenBrace),
-				new CategorisedCharacterString("color", 8, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(":", 13, CharacterCategorisationOptions.StylePropertyColon),
-				new CategorisedCharacterString("blue", 14, CharacterCategorisationOptions.Value),
-				new CategorisedCharacterString("}", 18, CharacterCategorisationOptions.CloseBrace)
-			};
-			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
-				expected,
-				Parser.ParseLESS(content),
-				new ParsedContentComparer()
-			);
-		}
-
-		[Fact]
-		public void PseudoClassesShouldNotBeIdentifiedAsPropertyValuesWhenWhitespaceIsPresentAroundTheColon()
-		{
-			var content = "a : hover{}";
-			var expected = new CategorisedCharacterString[]
-			{
-				new CategorisedCharacterString("a", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 1, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString(":", 2, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 3, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("hover", 4, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString("{", 9, CharacterCategorisationOptions.OpenBrace),
-				new CategorisedCharacterString("}", 10, CharacterCategorisationOptions.CloseBrace)
-			};
-			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
-				expected,
-				Parser.ParseLESS(content),
-				new ParsedContentComparer()
-			);
-		}
-
-		[Fact]
-		public void EndOfQuotedStylePropertyMayNotBeEndOfEntryStyleProperty()
-		{
-			var content = "body { font-family: \"Segoe UI\", Verdana; }";
-			var expected = new CategorisedCharacterString[]
-			{
-				new CategorisedCharacterString("body", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 4, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("{", 5, CharacterCategorisationOptions.OpenBrace),
-				new CategorisedCharacterString(" ", 6, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("font-family", 7, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(":", 18, CharacterCategorisationOptions.StylePropertyColon),
-				new CategorisedCharacterString(" ", 19, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("\"Segoe UI\",", 20, CharacterCategorisationOptions.Value),
-				new CategorisedCharacterString(" ", 31, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("Verdana", 32, CharacterCategorisationOptions.Value),
-				new CategorisedCharacterString(";", 39, CharacterCategorisationOptions.SemiColon),
-				new CategorisedCharacterString(" ", 40, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("}", 41, CharacterCategorisationOptions.CloseBrace)
-			};
-			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
-				expected,
-				Parser.ParseLESS(content),
-				new ParsedContentComparer()
-			);
-		}
-
-		[Fact]
-		public void MediaQueryCriteriaShouldBeIdentifiedAsSelectorContent()
-		{
-			var content = "@media screen and (min-width: 600px) { body { background: white url(\"awesomecats.png\") no-repeat; } }";
-			var expected = new CategorisedCharacterString[]
-			{
-				new CategorisedCharacterString("@media", 0, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 6, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("screen", 7, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 13, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("and", 14, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 17, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("(min-width:", 18, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 29, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("600px)", 30, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 36, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("{", 37, CharacterCategorisationOptions.OpenBrace),
-				new CategorisedCharacterString(" ", 38, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("body", 39, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(" ", 43, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("{", 44, CharacterCategorisationOptions.OpenBrace),
-				new CategorisedCharacterString(" ", 45, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("background", 46, CharacterCategorisationOptions.SelectorOrStyleProperty),
-				new CategorisedCharacterString(":", 56, CharacterCategorisationOptions.StylePropertyColon),
-				new CategorisedCharacterString(" ", 57, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("white", 58, CharacterCategorisationOptions.Value),
-				new CategorisedCharacterString(" ", 63, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("url(\"awesomecats.png\")", 64, CharacterCategorisationOptions.Value),
-				new CategorisedCharacterString(" ", 86, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("no-repeat", 87, CharacterCategorisationOptions.Value),
-				new CategorisedCharacterString(";", 96, CharacterCategorisationOptions.SemiColon),
-				new CategorisedCharacterString(" ", 97, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("}", 98, CharacterCategorisationOptions.CloseBrace),
-				new CategorisedCharacterString(" ", 99, CharacterCategorisationOptions.Whitespace),
-				new CategorisedCharacterString("}", 100, CharacterCategorisationOptions.CloseBrace)
-			};
-			Assert.Equal<IEnumerable<CategorisedCharacterString>>(
-				expected,
-				Parser.ParseLESS(content),
-				new ParsedContentComparer()
-			);
-		}
-
-		private class ParsedContentComparer : IEqualityComparer<IEnumerable<CategorisedCharacterString>>
-		{
-			public bool Equals(IEnumerable<CategorisedCharacterString> x, IEnumerable<CategorisedCharacterString> y)
-			{
-				if (x == null)
-					throw new ArgumentNullException("x");
-				if (y == null)
-					throw new ArgumentNullException("y");
-
-				var xArray = x.ToArray();
-				var yArray = y.ToArray();
-				if (xArray.Length != yArray.Length)
-					return false;
-
-				for (var index = 0; index < xArray.Length; index++)
-				{
-					if ((xArray[index].CharacterCategorisation != yArray[index].CharacterCategorisation)
-					|| (xArray[index].IndexInSource != yArray[index].IndexInSource)
-					|| (xArray[index].Value != yArray[index].Value))
-						return false;
-				}
-				return true;
-			}
-
-			public int GetHashCode(IEnumerable<CategorisedCharacterString> obj)
-			{
-				if (obj == null)
-					throw new ArgumentNullException("obj");
-
-				// This is irrelevant for our purposes, so returning zero for everything is fine (it's the Equals method that's important)
-				return 0;
-			}
-		}
-	}
+    }
 }
