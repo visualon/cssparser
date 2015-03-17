@@ -13,6 +13,79 @@ namespace UnitTests
 	/// </summary>
 	public class ParserTests
 	{
+        [Fact]
+        public void TerminatingLineReturnIsPartOfSingleLineComment()
+        {
+            var content = "// Comment\nbody { }";
+            var expected = new CategorisedCharacterString[]
+			{
+				new CategorisedCharacterString("// Comment\n", 0, CharacterCategorisationOptions.Comment),
+				new CategorisedCharacterString("body", 11, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 15, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("{", 16, CharacterCategorisationOptions.OpenBrace),
+				new CategorisedCharacterString(" ", 17, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("}", 18, CharacterCategorisationOptions.CloseBrace)
+			};
+            var actual = Parser.ParseLESS(content).ToArray(); // TODO
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
+
+        [Fact]
+        public void NonContainedLineReturnIsNotPartOfMultiLineComment()
+        {
+            var content = "/* Comment */\nbody { }";
+            var expected = new CategorisedCharacterString[]
+			{
+				new CategorisedCharacterString("/* Comment */", 0, CharacterCategorisationOptions.Comment),
+				new CategorisedCharacterString("\n", 13, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("body", 14, CharacterCategorisationOptions.SelectorOrStyleProperty),
+				new CategorisedCharacterString(" ", 18, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("{", 19, CharacterCategorisationOptions.OpenBrace),
+				new CategorisedCharacterString(" ", 20, CharacterCategorisationOptions.Whitespace),
+				new CategorisedCharacterString("}", 21, CharacterCategorisationOptions.CloseBrace)
+			};
+            var actual = Parser.ParseLESS(content).ToArray(); // TODO
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		[Fact]
 		public void PseudoClassesShouldNotBeIdentifiedAsPropertyValues()
 		{
