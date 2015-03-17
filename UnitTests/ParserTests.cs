@@ -87,6 +87,89 @@ namespace UnitTests
         }
 
         [Fact]
+        public void CommentedOutPropertyValue()
+        {
+            var content = "a { color: /*black*/ red; }";
+            var expected = new CategorisedCharacterString[]
+			{
+                CSS.SelectorOrStyleProperty("a", 0),
+                CSS.Whitespace(" ", 1),
+                CSS.OpenBrace(2),
+                CSS.Whitespace(" ", 3),
+                CSS.SelectorOrStyleProperty("color", 4),
+                CSS.StylePropertyColon(9),
+                CSS.Whitespace(" ", 10),
+                CSS.Comment("/*black*/", 11),
+                CSS.Whitespace(" ", 20),
+                CSS.Value("red", 21),
+                CSS.SemiColon(24),
+                CSS.Whitespace(" ", 25),
+                CSS.CloseBrace(26)
+			};
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
+
+        [Fact]
+        public void SingleLineCommentAnnotatedPropertyValue()
+        {
+            var content = "a {\n  color: black; // red\n}";
+            var expected = new CategorisedCharacterString[]
+			{
+                CSS.SelectorOrStyleProperty("a", 0),
+                CSS.Whitespace(" ", 1),
+                CSS.OpenBrace(2),
+                CSS.Whitespace("\n  ", 3),
+                CSS.SelectorOrStyleProperty("color", 6),
+                CSS.StylePropertyColon(11),
+                CSS.Whitespace(" ", 12),
+                CSS.Value("black", 13),
+                CSS.SemiColon(18),
+                CSS.Whitespace(" ", 19),
+                CSS.Comment("// red\n", 20),
+                CSS.CloseBrace(27)
+			};
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
+
+
+        // Double open/close braces
+
+
+        // TODO: Various comment arrangements (single line, multi line, fragment - eg. "colour: /*black*/ red;" or "color: black; // red")
+
+        // TODO: Single property without semi-colon
+        // TODO: Single property WITH semi-colon
+        // TODO: Multiple properties
+        // TODO: Nested
+        // TODO: Nested plus multiple properties
+        // TODO: Nested plus multiple properties before AND after\
+
+        // TODO: class, id, multiple selectors, multiple classes (.c1.c2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [Fact]
         public void PseudoClassesShouldNotBeIdentifiedAsPropertyValues()
         {
             var content = "a:hover { color: blue; }";
