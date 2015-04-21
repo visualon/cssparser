@@ -34,7 +34,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 					CharacterCategorisationOptions.Comment,
 					_processorFactory.Get<SkipCharactersSegment>(
 						CharacterCategorisationOptions.Comment,
-						2,
+						1,
 						_characterProcessorToReturnTo
 					)
 				);
