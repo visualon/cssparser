@@ -45,6 +45,10 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CSSParser.ExtendedLESSParser\CSSParser.ExtendedLESSParser.csproj">
+      <Project>{437f1aa5-1ce2-447e-9020-2a51a14fedd7}</Project>
+      <Name>CSSParser.ExtendedLESSParser</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CSSParser\CSSParser.csproj">
       <Project>{F5F14D89-0958-40A0-9920-8C3245656F76}</Project>
       <Name>CSSParser</Name>

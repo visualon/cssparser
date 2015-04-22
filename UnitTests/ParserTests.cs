@@ -220,6 +220,8 @@ namespace UnitTests
 			);
 		}
 
+        
+
 		private class ParsedContentComparer : IEqualityComparer<IEnumerable<CategorisedCharacterString>>
 		{
 			public bool Equals(IEnumerable<CategorisedCharacterString> x, IEnumerable<CategorisedCharacterString> y)
