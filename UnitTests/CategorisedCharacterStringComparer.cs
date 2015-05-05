@@ -17,10 +17,6 @@ namespace UnitTests
                 (x.CharacterCategorisation == y.CharacterCategorisation) &&
                 (x.IndexInSource == y.IndexInSource) &&
                 (x.Value == y.Value);
-            if (!match)
-            {
-                // TODO: Remove
-            }
             return match;
         }
 

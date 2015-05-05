@@ -46,6 +46,60 @@ namespace UnitTests
         }
 
         [Fact]
+        public void ClassNameIsPartOfSelector()
+        {
+            var content = "p.note { font-style: italic }";
+            var expected = new CategorisedCharacterString[]
+			{
+                CSS.SelectorOrStyleProperty("p.note", 0),
+                CSS.Whitespace(" ", 6),
+                CSS.OpenBrace(7),
+                CSS.Whitespace(" ", 8),
+                CSS.SelectorOrStyleProperty("font-style", 9),
+                CSS.StylePropertyColon(19),
+                CSS.Whitespace(" ", 20),
+                CSS.Value("italic", 21),
+                CSS.Whitespace(" ", 27),
+                CSS.CloseBrace(28)
+			};
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
+
+        /// <summary>
+        /// Whitespace should be characters that can safely be removed from style content without affecting its meaning - this does not apply to whitespace
+        /// within style values, since removing that whitespace may affect the meaning of the content. As such, whitespace that is part of a quoted value
+        /// should be categorised as type Value and not as type Whitespace.
+        /// </summary>
+        [Fact]
+        public void WhitespaceInQuotedValueIsCategorisedAsValueAndNotAsWhitespace()
+        {
+            var content = "body { font-family: \"Segoe UI\"; }";
+            var expected = new CategorisedCharacterString[]
+            {
+                CSS.SelectorOrStyleProperty("body", 0),
+                CSS.Whitespace(" ", 4),
+                CSS.OpenBrace(5),
+                CSS.Whitespace(" ", 6),
+                CSS.SelectorOrStyleProperty("font-family", 7),
+                CSS.StylePropertyColon(18),
+                CSS.Whitespace(" ", 19),
+                CSS.Value("\"Segoe UI\"", 20),
+                CSS.SemiColon(30),
+                CSS.Whitespace(" ", 31),
+                CSS.CloseBrace(32)
+            };
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
+
+        [Fact]
         public void TerminatingLineReturnIsPartOfSingleLineComment()
         {
             var content = "// Comment\nbody { }";
@@ -139,8 +193,80 @@ namespace UnitTests
             );
         }
 
+        /// <summary>
+        /// Most adjacent characters of the same type are combined into a single CategorisedCharacterString but for closing braces this feels wrong when
+        /// the API is used - multiple closing braces do not represent a single "value", they are important individually (unlike the characters of an
+        /// actual Style Property Value; those characters only make sense as part of a complete string)
+        /// </summary>
+        [Fact]
+        public void ClosingBraceCharactersAreNotCombined()
+        {
+            var content = "p { a { color: black; }}";
+            var expected = new CategorisedCharacterString[]
+			{
+                CSS.SelectorOrStyleProperty("p", 0),
+                CSS.Whitespace(" ", 1),
+                CSS.OpenBrace(2),
+                CSS.Whitespace(" ", 3),
+                CSS.SelectorOrStyleProperty("a", 4),
+                CSS.Whitespace(" ", 5),
+                CSS.OpenBrace(6),
+                CSS.Whitespace(" ", 7),
+                CSS.SelectorOrStyleProperty("color", 8),
+                CSS.StylePropertyColon(13),
+                CSS.Whitespace(" ", 14),
+                CSS.Value("black", 15),
+                CSS.SemiColon(20),
+                CSS.Whitespace(" ", 21),
+                CSS.CloseBrace(22),
+                CSS.CloseBrace(23)
+			};
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
 
-        // Double open/close braces
+        [Fact]
+        public void MultipleSelectorsAppearAsMultipleStringsIfTheyAreSeparatedByWhitespace()
+        {
+            var content = "p, a { }";
+            var expected = new CategorisedCharacterString[]
+			{
+                CSS.SelectorOrStyleProperty("p,", 0),
+                CSS.Whitespace(" ", 2),
+                CSS.SelectorOrStyleProperty("a", 3),
+                CSS.Whitespace(" ", 4),
+                CSS.OpenBrace(5),
+                CSS.Whitespace(" ", 6),
+                CSS.CloseBrace(7)
+			};
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
+
+        [Fact]
+        public void MultipleSelectorsAppearAsSingleStringsIfNotSeparatedByWhitespace()
+        {
+            var content = "p,a { }";
+            var expected = new CategorisedCharacterString[]
+			{
+                CSS.SelectorOrStyleProperty("p,a", 0),
+                CSS.Whitespace(" ", 3),
+                CSS.OpenBrace(4),
+                CSS.Whitespace(" ", 5),
+                CSS.CloseBrace(6)
+			};
+            Assert.Equal(
+                expected,
+                Parser.ParseLESS(content),
+                new CategorisedCharacterStringComparer()
+            );
+        }
 
 
         // TODO: Various comment arrangements (single line, multi line, fragment - eg. "colour: /*black*/ red;" or "color: black; // red")
