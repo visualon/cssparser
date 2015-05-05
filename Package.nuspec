@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>CssParser</id>
+    <title>C# Css Parser</title>
+    <version>1.1</version>
+    <authors>ProductiveRage</authors>
+    <licenseUrl>https://bitbucket.org/DanRoberts/cssparser/src/157f0a257d916c3a51bdd96b90bb7b4c1b0c1f9e/LICENSE.txt</licenseUrl>
+    <projectUrl>https://bitbucket.org/DanRoberts/cssparser</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A simple CSS and LESS parser to categorise strings of content and optionally generate a hierarchical representation of it</description>
+  </metadata>
+  <files>
+    <file src="CSSParser.ExtendedLESSParser\bin\release\CSSParser.dll" target="lib" />
+    <file src="CSSParser.ExtendedLESSParser\bin\release\CSSParser.ExtendedLESSParser.dll" target="lib" />
+    <file src="CSSParser.ExtendedLESSParser\bin\release\CSSParser.ExtendedLESSParser.pdb" target="lib" />
+    <file src="CSSParser.ExtendedLESSParser\bin\release\CSSParser.ExtendedLESSParser.xml" target="lib" />
+    <file src="CSSParser.ExtendedLESSParser\bin\release\CSSParser.pdb" target="lib" />
+    <file src="CSSParser.ExtendedLESSParser\bin\release\CSSParser.xml" target="lib" />
+  </files>
+</package>

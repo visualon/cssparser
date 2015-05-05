@@ -27,7 +27,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			// For single line comments, the line return should be considered part of the comment content (in the same way that the "/*" and "*/" sequences are
 			// considered part of the content for multi-line comments)
 			var currentCharacter = stringNavigator.CurrentCharacter;
-			var nextCharacter = stringNavigator.CurrentCharacter;
+			var nextCharacter = stringNavigator.Next.CurrentCharacter;
 			if ((currentCharacter == '\r') && (nextCharacter == '\n'))
 			{
 				return new CharacterProcessorResult(
