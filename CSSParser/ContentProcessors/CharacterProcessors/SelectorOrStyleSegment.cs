@@ -243,7 +243,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			}
 
 			// If we're currently processing StyleOrSelector content and we encounter a square or round open bracket then we're about to
-			// enter an attribute selector (eg. "a[href]") or a LESS mixin argument set (eg. ".RoundedCorners (@radius"). In either case
+			// enter an attribute selector (eg. "a[href]") or a LESS mixin argument set (eg. ".RoundedCorners (@radius)". In either case
 			// we need to consider all content until the corresponding close bracket to be a StyleOrSelector, whether it's whitespace or
 			// a quoted section (note: not if it's a comment, that still gets identified as comment content).
 			if (_processingType == ProcessingTypeOptions.StyleOrSelector)
@@ -322,16 +322,41 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 		private static readonly ReadOnlyCollection<string> PseudoClasses = new List<string>
 		{
 			"lang",
-			"link",
-			"after",
-			"focus",
-			"hover",
-			"active",
-			"before",
-			"visited",
-			"first-line",
-			"first-child",
-			"first-letter"
+            "link",
+            "after",
+            "focus",
+            "hover",
+            "active",
+            "before",
+            "visited",
+            "first-line",
+            "first-child",
+            "first-letter",
+            "last-child",
+            "nth-child",
+            "checked",
+            "disabled",
+            "empty",
+            "enabled",
+            "first-of-type",
+            "focus",
+            "in-range",
+            "invalid",
+            "last-of-type",
+            "not",
+            "nth-last-child",
+            "nth-last-of-type",
+            "nth-of-type",
+            "only-of-type",
+            "only-child",
+            "optional",
+            "out-of-range",
+            "read-only",
+            "read-write",
+            "required",
+            "root",
+            "target",
+            "valid"
 		}.AsReadOnly();
 	}
 }
