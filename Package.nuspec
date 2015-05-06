@@ -7,6 +7,7 @@
         <authors>ProductiveRage</authors>
         <licenseUrl>https://bitbucket.org/DanRoberts/cssparser/src/157f0a257d916c3a51bdd96b90bb7b4c1b0c1f9e/LICENSE.txt</licenseUrl>
         <projectUrl>https://bitbucket.org/DanRoberts/cssparser</projectUrl>
+        <iconUrl>https://en.gravatar.com/userimage/25650568/f116011fc5e456142d973c6867b9e712.jpg?size=200</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>A simple CSS and LESS parser to categorise strings of content and optionally generate a hierarchical representation of it</description>
     </metadata>
