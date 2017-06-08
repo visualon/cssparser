@@ -157,13 +157,9 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 				// then things would have been easier!)
 				if (_processingType == ProcessingTypeOptions.StyleOrSelector)
 				{
-					if (IsNextWordOneOfThePseudoClasses(stringNavigator.Next))
-					{
-						return new CharacterProcessorResult(
-							CharacterCategorisationOptions.SelectorOrStyleProperty,
-							GetSelectorOrStyleCharacterProcessor()
-						);
-					}
+					var pseudoClassHandlingProcessResultfApplicable = GetPseudoClassHandlingProcessResultIfApplicable(stringNavigator.Next);
+					if (pseudoClassHandlingProcessResultfApplicable != null)
+						return pseudoClassHandlingProcessResultfApplicable;
 				}
 				return new CharacterProcessorResult(
 					CharacterCategorisationOptions.StylePropertyColon,
@@ -293,25 +289,54 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 		}
 
 		/// <summary>
-		/// This will try to determine whether the next word from the given point in the string navigator is a recognised pseudo class. Any whitespace at
-		/// the current position will be moved over and the content, if any, taken from there.
+		/// If this next work from the current point in the given string navigator appears to be a recognised pseudo class then this will return a result that
+		/// will ensure that the current character is identified as a selector-or-property-name content rather than a property-name-value-separator colon (the
+		/// string navigator passed here will be for the position directly after the colon, which is what is currently being negotiated). Any whitespace at
+		/// the current position will be moved over when looking for pseudo class content. If the content does not appear to be for a pseudo class then null
+		/// will be returned and the caller may continue with whatever logic it wants to.
 		/// </summary>
-		private bool IsNextWordOneOfThePseudoClasses(IWalkThroughStrings stringNavigator)
+		private CharacterProcessorResult GetPseudoClassHandlingProcessResultIfApplicable(IWalkThroughStrings stringNavigatorAtStartOfPotentialPseudoClass)
 		{
-			if (stringNavigator == null)
+			if (stringNavigatorAtStartOfPotentialPseudoClass == null)
 				throw new ArgumentNullException("stringNavigator");
 
+			// If the first character of the possible-psuedo-class content is a ":" then it means that we've encountered a "::" (since the first ":" triggered
+			// this method to be called with the content after it) and that means that it's definitely a psuedo class and not a property name / value pair. As
+			// such we'll return a process that swallows this second ":" and then processes the next content as selector-or-style-content (and not as property
+			// name content)
+			if (stringNavigatorAtStartOfPotentialPseudoClass.CurrentCharacter == ':')
+			{
+				var contentProcessor = GetSelectorOrStyleCharacterProcessor();
+				return new CharacterProcessorResult(
+					CharacterCategorisationOptions.SelectorOrStyleProperty,
+					new SkipCharactersSegment(CharacterCategorisationOptions.SelectorOrStyleProperty, 1, GetSelectorOrStyleCharacterProcessor())
+				);
+			}
+
 			// Skip over any whitespace to find the start of the next content
+			var whiteSpaceCharactersToSkipOver = 0;
 			while (true)
 			{
-				var character = stringNavigator.CurrentCharacter;
+				var character = stringNavigatorAtStartOfPotentialPseudoClass.CurrentCharacter;
 				if ((character == null) || !char.IsWhiteSpace(character.Value))
 					break;
-				stringNavigator = stringNavigator.Next;
+				stringNavigatorAtStartOfPotentialPseudoClass = stringNavigatorAtStartOfPotentialPseudoClass.Next;
+				whiteSpaceCharactersToSkipOver++;
 			}
 
 			// Determine whether that content (if there is any) matches any of the pseudo classes
-			return PseudoClasses.Any(c => stringNavigator.DoesCurrentContentMatch(c));
+			if (PseudoClasses.Any(c => stringNavigatorAtStartOfPotentialPseudoClass.DoesCurrentContentMatch(c)))
+			{
+				IProcessCharacters contentProcessor = GetSelectorOrStyleCharacterProcessor();
+				if (whiteSpaceCharactersToSkipOver > 0)
+					contentProcessor = new SkipCharactersSegment(CharacterCategorisationOptions.Whitespace, whiteSpaceCharactersToSkipOver, contentProcessor);
+				return new CharacterProcessorResult(
+					CharacterCategorisationOptions.SelectorOrStyleProperty,
+					contentProcessor
+				);
+			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -357,8 +382,7 @@ namespace CSSParser.ContentProcessors.CharacterProcessors
 			"root",
 			"target",
 			"valid",
-			":after",
-			":before"
+			"-moz-focusring"
 		}.AsReadOnly();
 	}
 }
