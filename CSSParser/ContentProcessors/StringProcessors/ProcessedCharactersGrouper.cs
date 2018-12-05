@@ -50,7 +50,7 @@ namespace CSSParser.ContentProcessors.StringProcessors
 					{
 						var value = stringBuilder.ToString();
 						yield return new CategorisedCharacterString(value, currentCharacterIndex - value.Length, currentCharacterType);
-						stringBuilder.Clear();
+						stringBuilder.Length = 0;
 					}
 					currentCharacterType = processResult.CharacterCategorisation;
 				}

@@ -1,79 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F5F14D89-0958-40A0-9920-8C3245656F76}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CSSParser</RootNamespace>
-    <AssemblyName>CSSParser</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\CSSParser.XML</DocumentationFile>
-    <NoWarn>1591</NoWarn>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ContentProcessors\CharacterCategorisationOptions.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\CharacterProcessorResult.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\BracketedSelectorSegment.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\Factories\CharacterProcessorsFactory.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\Factories\CachingCharacterProcessorsFactory.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\StyleValueSegment.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\SelectorOrStylePropertySegment.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\Factories\IGenerateCharacterProcessors.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\MediaQuerySegment.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\QuotedSegment.cs" />
-    <Compile Include="ContentProcessors\StringProcessors\CategorisedCharacterString.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\SelectorOrStyleSegment.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\MultiLineCommentSegment.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\SingleLineCommentSegment.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\SkipCharactersSegment.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\ISegment.cs" />
-    <Compile Include="ContentProcessors\StringProcessors\ICollectStringsOfProcessedCharacters.cs" />
-    <Compile Include="ContentProcessors\CharacterProcessors\IProcessCharacters.cs" />
-    <Compile Include="ContentProcessors\StringProcessors\ProcessedCharactersGrouper.cs" />
-    <Compile Include="Parser.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringNavigators\IWalkThroughStrings_Extensions.cs" />
-    <Compile Include="StringNavigators\GoneTooFarStringNavigator.cs" />
-    <Compile Include="StringNavigators\IWalkThroughStrings.cs" />
-    <Compile Include="StringNavigators\StringNavigator.cs" />
-    <Compile Include="TextReaderNavigators\WeakEventSource.cs" />
-    <Compile Include="TextReaderNavigators\WeakEventSourceOperators.cs" />
-    <Compile Include="TextReaderNavigators\SimpleImmutableSet.cs" />
-    <Compile Include="TextReaderNavigators\TextReaderStringNavigator.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net45;net46;net35</TargetFrameworks>
+
+        <Title>C# Css Parser</Title>
+        <Description>A simple CSS parser to categorise strings of content and optionally generate a hierarchical representation of it</Description>
+
+        <PackageId>VisualOn.CssParser</PackageId>
+        <PackageTags>css</PackageTags>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
+    </ItemGroup>
 </Project>

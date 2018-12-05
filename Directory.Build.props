@@ -1,0 +1,22 @@
+<Project>
+    <PropertyGroup>
+        <VersionPrefix Condition="'$(VersionPrefix)' == ''">1.0.0</VersionPrefix>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+
+        <Authors>ProductiveRage; VisualOn GmbH</Authors>
+        <Copyright>Copyright © VisualOn GmbH 2018</Copyright>
+
+        <PackageIconUrl>https://visualon.github.io/img/nuget.png</PackageIconUrl>
+        <PackageProjectUrl>https://github.com/VisualOn/cssparser</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+        <MinClientVersion>2.12</MinClientVersion>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <!-- including PDB files in NuGet for source link because symbolsource.org does not support portable PDBs -->
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net35' and  '$(MSBuildRuntimeType)' == 'Core'">
+        <FrameworkPathOverride>$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
+    </PropertyGroup>
+</Project>
