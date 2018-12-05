@@ -1,7 +1,4 @@
-#### Build status
-* AppVeyor [![Build status](https://ci.appveyor.com/api/projects/status/vuiq6y07u4xihtbc/branch/master?svg=true)](https://ci.appveyor.com/project/ViceIce/cssparser/branch/master)
-
-# CSS Parser
+# CSS Parser [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/visualon/cssparser?branch=master&svg=true)](https://ci.appveyor.com/project/ViceIce/cssparser/branch/master)
 
 This is a fork from [Dan Roberts](https://bitbucket.org/DanRoberts/cssparser).
 
