@@ -1,5 +1,7 @@
 # CSS Parser
 
+This is a fork from [Dan Roberts](https://bitbucket.org/DanRoberts/cssparser).
+
 This was written to fulfill a need I had to run quickly through a string of CSS and identify what "type" each character was. With an optional ability to parse it into hierarchical data describing nested selectors and/or media queries (most applicable to LESS rather than vanilla CSS since LESS supports nesting of selectors whereas CSS only supports single nesting of a selector within a media query).
 
     IEnumerable<CategorisedCharacterString> ParseCSS(string content)
@@ -59,7 +61,7 @@ will return **CategorisedCharacterString** instances with the data
 
 This analysis can be done very cheaply as it is only a very simple representation. It does not, for example, differentiate between the type of the ".Content" value or "color", they are both considered to be of type **SelectorOrStyleProperty**.
 
-To arrange in a hierchical manner and to categorise more strictly, the data return from ParseCSS or ParseLess can be passed into 
+To arrange in a hierchical manner and to categorise more strictly, the data return from ParseCSS or ParseLess can be passed into
 
     IEnumerable<ICSSFragment> ParseIntoStructuredData(
       IEnumerable<CategorisedCharacterString> segments
@@ -69,7 +71,7 @@ To arrange in a hierchical manner and to categorise more strictly, the data retu
 
 So content such as
 
-    // Example 
+    // Example
     html
     {
       h1
