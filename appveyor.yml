@@ -17,11 +17,13 @@ before_build:
 
 build:
   verbosity: minimal
-  publish_nuget: false
+  publish_nuget: true
   publish_nuget_symbols: false
 
-test_script:
-  - dotnet test
+test:
+  assemblies:
+    only:
+      - 'UnitTests\bin\**\UnitTests.dll'
 
-artifacts:
-  - path: '**\*.nupkg'
+# artifacts:
+#   - path: '**\*.nupkg'
