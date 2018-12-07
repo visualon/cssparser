@@ -1,15 +1,26 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSSParser", "CSSParser\CSSParser.csproj", "{F5F14D89-0958-40A0-9920-8C3245656F76}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSSParser", "CSSParser\CSSParser.csproj", "{F5F14D89-0958-40A0-9920-8C3245656F76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{2874F8B3-AB39-40C9-8C2B-9B0FD7EDB1F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester", "Tester\Tester.csproj", "{2874F8B3-AB39-40C9-8C2B-9B0FD7EDB1F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSSRenderers", "CSSRenderers\CSSRenderers.csproj", "{16D4470D-F973-4261-90DC-AC248FC64827}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSSRenderers", "CSSRenderers\CSSRenderers.csproj", "{16D4470D-F973-4261-90DC-AC248FC64827}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{2F51989B-9937-4B73-BE22-E847AE5F1ED3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{2F51989B-9937-4B73-BE22-E847AE5F1ED3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSSParser.ExtendedLESSParser", "CSSParser.ExtendedLESSParser\CSSParser.ExtendedLESSParser.csproj", "{437F1AA5-1CE2-447E-9020-2A51A14FEDD7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSSParser.ExtendedLESSParser", "CSSParser.ExtendedLESSParser\CSSParser.ExtendedLESSParser.csproj", "{437F1AA5-1CE2-447E-9020-2A51A14FEDD7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{BB696092-A26A-4B70-876F-FBE5EF64F6C5}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +32,10 @@ Global
 		{F5F14D89-0958-40A0-9920-8C3245656F76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5F14D89-0958-40A0-9920-8C3245656F76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5F14D89-0958-40A0-9920-8C3245656F76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{437F1AA5-1CE2-447E-9020-2A51A14FEDD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{437F1AA5-1CE2-447E-9020-2A51A14FEDD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{437F1AA5-1CE2-447E-9020-2A51A14FEDD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{437F1AA5-1CE2-447E-9020-2A51A14FEDD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2874F8B3-AB39-40C9-8C2B-9B0FD7EDB1F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2874F8B3-AB39-40C9-8C2B-9B0FD7EDB1F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2874F8B3-AB39-40C9-8C2B-9B0FD7EDB1F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2874F8B3-AB39-40C9-8C2B-9B0FD7EDB1F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{16D4470D-F973-4261-90DC-AC248FC64827}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{16D4470D-F973-4261-90DC-AC248FC64827}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16D4470D-F973-4261-90DC-AC248FC64827}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,12 +44,15 @@ Global
 		{2F51989B-9937-4B73-BE22-E847AE5F1ED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F51989B-9937-4B73-BE22-E847AE5F1ED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F51989B-9937-4B73-BE22-E847AE5F1ED3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2874F8B3-AB39-40C9-8C2B-9B0FD7EDB1F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2874F8B3-AB39-40C9-8C2B-9B0FD7EDB1F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2874F8B3-AB39-40C9-8C2B-9B0FD7EDB1F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2874F8B3-AB39-40C9-8C2B-9B0FD7EDB1F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{437F1AA5-1CE2-447E-9020-2A51A14FEDD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{437F1AA5-1CE2-447E-9020-2A51A14FEDD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{437F1AA5-1CE2-447E-9020-2A51A14FEDD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{437F1AA5-1CE2-447E-9020-2A51A14FEDD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CBBB0090-161A-4FDE-BA11-B305F8B0A784}
 	EndGlobalSection
 EndGlobal
