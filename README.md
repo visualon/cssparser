@@ -1,6 +1,17 @@
-# CSS Parser [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/visualon/cssparser?branch=master&svg=true)](https://ci.appveyor.com/project/ViceIce/cssparser/branch/master)
+# CSS Parser [![Build status](https://ci.appveyor.com/api/projects/status/vuiq6y07u4xihtbc?svg=true)](https://ci.appveyor.com/project/ViceIce/cssparser)
 
 This is a fork from [Dan Roberts](https://bitbucket.org/DanRoberts/cssparser).
+
+A simple CSS and LESS parser to categorise strings of content and optionally generate a hierarchical representation of it.
+
+## Changes
+See [Changelog](CHANGELOG.md)
+
+## License
+[MIT License](LICENSE)
+
+
+### Howto
 
 This was written to fulfill a need I had to run quickly through a string of CSS and identify what "type" each character was. With an optional ability to parse it into hierarchical data describing nested selectors and/or media queries (most applicable to LESS rather than vanilla CSS since LESS supports nesting of selectors whereas CSS only supports single nesting of a selector within a media query).
 
