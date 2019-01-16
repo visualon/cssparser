@@ -1,6 +1,7 @@
 <Project>
     <PropertyGroup>
         <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
+        <MinVerTagPrefix>v</MinVerTagPrefix>
 
         <Authors>ProductiveRage; VisualOn GmbH</Authors>
         <Copyright>Copyright © VisualOn GmbH 2019</Copyright>
