@@ -1,4 +1,4 @@
-# CSS Parser [![Build status](https://ci.appveyor.com/api/projects/status/vuiq6y07u4xihtbc?svg=true)](https://ci.appveyor.com/project/ViceIce/cssparser)
+# CSS Parser [![Build status](https://ci.appveyor.com/api/projects/status/vuiq6y07u4xihtbc?svg=true)](https://ci.appveyor.com/project/ViceIce/cssparser) [![](https://img.shields.io/myget/visualon/v/VisualOn.CSSParser.svg?label=MyGet&style=flat)](https://www.myget.org/gallery/visualon)
 
 This is a fork from [Dan Roberts](https://bitbucket.org/DanRoberts/cssparser).
 
