@@ -14,6 +14,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
-        <PackageReference Include="MinVer" Version="1.2.0+build.244" PrivateAssets="All" />
+        <PackageReference Include="MinVer" Version="2.0.0" PrivateAssets="All" />
     </ItemGroup>
 </Project>
