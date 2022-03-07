@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - run tests on netcoreapp3.1, net48, net6.0
+- switch to github actions
 
 ## 1.0.0 - 2019-01-16
 ### Added
