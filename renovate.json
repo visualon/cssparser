@@ -1,16 +1,5 @@
 {
-  "extends": ["config:base", ":assignee(viceice)", ":automergePatch", ":masterIssue"],
-  "labels": ["deps"],
-  "nuget": {
-    "fileMatch": ["\\.csproj$", "\\.props$", "\\.targets$"]
-  },
-  "prCreation": "not-pending",
-  "semanticCommits": true,
-  "timezone": "Europe/Berlin",
-  "major": {
-    "masterIssueApproval": true
-  },
-  "minor": {
-    "masterIssueApproval": true
-  }
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["visualon/renovate-config", "visualon/renovate-config:automergePatch"],
+  "labels": ["deps"]
 }
