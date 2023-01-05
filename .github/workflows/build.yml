@@ -2,11 +2,9 @@ name: build
 
 on:
   push:
-    branches:
-      - main
-      - 'renovate/**'
-  pull_request:
-    branches: [main]
+
+env:
+  DOTNET_NOLOGO: true # https://github.com/actions/setup-dotnet#environment-variables-to-use-with-dotnet
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
@@ -21,6 +19,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+      
       - name: Setup .NET
         uses: actions/setup-dotnet@607fce577a46308457984d59e4954e075820f10a # v3.0.3
         with:
@@ -35,7 +34,9 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
+
       - name: Build
         run: dotnet build --no-restore
+
       - name: Test
         run: dotnet test --no-build --verbosity normal
