@@ -12,6 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CssParser\CssParser.csproj" />
+        <ProjectReference Include="..\CSSParser\CSSParser.csproj" />
     </ItemGroup>
 </Project>

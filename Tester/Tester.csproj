@@ -10,7 +10,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CssParser\CssParser.csproj" />
         <ProjectReference Include="..\CSSRenderers\CSSRenderers.csproj" />
         <ProjectReference Include="..\CSSParser.ExtendedLESSParser\CSSParser.ExtendedLESSParser.csproj" />
     </ItemGroup>
