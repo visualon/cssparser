@@ -14,7 +14,8 @@
           <CodeCoverage>
             <ModulePaths>
               <Include>
-                <ModulePath>NCrontab\.Advanced\.dll$</ModulePath>
+                <ModulePath>CSSParser\.dll$</ModulePath>
+                <ModulePath>CSSParser\.ExtendedLESSParser\.dll$</ModulePath>
               </Include>
             </ModulePaths>
             <Attributes>
