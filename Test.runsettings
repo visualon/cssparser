@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
-  <!-- Configurations that affect the Test Framework -->
-  <MSTest>
-    <DeleteDeploymentDirectoryAfterTestRunIsComplete>false</DeleteDeploymentDirectoryAfterTestRunIsComplete>
-  </MSTest>
-
 
   <DataCollectionRunSettings>
     <DataCollectors>
@@ -32,6 +27,5 @@
       </DataCollector>
     </DataCollectors>
   </DataCollectionRunSettings>
-
 
 </RunSettings>
