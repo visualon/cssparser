@@ -7,7 +7,7 @@
         <Copyright>Copyright © VisualOn GmbH 2019</Copyright>
 
         <PackageIconUrl>https://visualon.github.io/img/nuget.png</PackageIconUrl>
-        <PackageProjectUrl>https://github.com/VisualOn/cssparser</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/visualon/cssparser</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
         <MinClientVersion>2.12</MinClientVersion>
@@ -20,7 +20,7 @@
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)CSSParser.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net45" Version="1.0.3" PrivateAssets="all" />
     </ItemGroup>
