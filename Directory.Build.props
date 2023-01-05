@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
+        <MinVerMinimumMajorMinor>2.0</MinVerMinimumMajorMinor>
         <MinVerTagPrefix>v</MinVerTagPrefix>
 
         <Authors>ProductiveRage; VisualOn GmbH</Authors>
