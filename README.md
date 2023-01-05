@@ -1,6 +1,7 @@
 [![build](https://github.com/visualon/cssparser/actions/workflows/build.yml/badge.svg)](https://github.com/visualon/cssparser/actions/workflows/build.yml)
-[![Nuget](https://img.shields.io/nuget/v/VisualOn.CSSParser)](https://www.nuget.org/packages/VisualOn.CssParser)
-[![Nuget](https://img.shields.io/nuget/v/VisualOn.CSSParser.ExtendedLESSParser)](https://www.nuget.org/packages/VisualOn.CssParser.ExtendedLESSParser)
+[![VisualOn.CSSParser](https://img.shields.io/nuget/v/VisualOn.CSSParser?label=VisualOn.CSSParser)](https://www.nuget.org/packages/VisualOn.CssParser)
+[![VisualOn.CSSParser.ExtendedLESSParser](https://img.shields.io/nuget/v/VisualOn.CSSParser.ExtendedLESSParser?label=VisualOn.CSSParser.ExtendedLESSParser)](https://www.nuget.org/packages/VisualOn.CssParser.ExtendedLESSParser)
+![LICENSE](https://img.shields.io/github/license/visualon/cssparser)
 
 # CSS Parser 
 
