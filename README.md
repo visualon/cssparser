@@ -1,4 +1,5 @@
-[![build](https://github.com/visualon/cssparser/actions/workflows/build.yml/badge.svg)](https://github.com/visualon/cssparser/actions/workflows/build.yml) [![](https://img.shields.io/myget/visualon/v/VisualOn.CSSParser.svg?label=MyGet&style=flat)](https://www.myget.org/gallery/visualon)
+[![build](https://github.com/visualon/cssparser/actions/workflows/build.yml/badge.svg)](https://github.com/visualon/cssparser/actions/workflows/build.yml)
+[![Nuget](https://img.shields.io/nuget/v/VisualOn.CSSParser)](https://www.nuget.org/packages/VisualOn.CssParser)
 
 # CSS Parser 
 
@@ -7,7 +8,7 @@ This is a fork from [Dan Roberts](https://bitbucket.org/DanRoberts/cssparser).
 A simple CSS and LESS parser to categorise strings of content and optionally generate a hierarchical representation of it.
 
 ## Changes
-See [Changelog](CHANGELOG.md)
+See [Releases](/visualon/cssparser/releases)
 
 ## License
 [MIT License](LICENSE)
