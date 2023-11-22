@@ -1,7 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["visualon/renovate-config", "visualon/renovate-config:automergePatch"],
-  "labels": ["deps"],
+  "extends": [
+    "visualon/renovate-config",
+    "visualon/renovate-config:automergePatch"
+  ],
+  "labels": [
+    "deps"
+  ],
   "forkProcessing": "enabled",
   "packageRules": [
     {
@@ -18,12 +23,15 @@
         "https://nsubstitute.github.io/",
         "https://togithub.com/fluffynuts/NExpect"
       ],
-      "automerge": "true"
+      "automerge": true
     },
     {
       "description": "Automerge test deps",
-      "matchSourceUrlPrefixes": ["https://github.com/nsubstitute/", "https://github.com/nunit/"],
-      "automerge": "true"
+      "matchSourceUrlPrefixes": [
+        "https://github.com/nsubstitute/",
+        "https://github.com/nunit/"
+      ],
+      "automerge": true
     }
   ]
 }
