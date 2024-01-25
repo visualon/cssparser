@@ -18,12 +18,12 @@
         "https://nsubstitute.github.io/",
         "https://togithub.com/fluffynuts/NExpect"
       ],
-      "automerge": "true"
+      "automerge": true
     },
     {
       "description": "Automerge test deps",
       "matchSourceUrlPrefixes": ["https://github.com/nsubstitute/", "https://github.com/nunit/"],
-      "automerge": "true"
+      "automerge": true
     }
   ]
 }
