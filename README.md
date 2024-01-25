@@ -1,21 +1,22 @@
+# CSS Parser
+
 [![build](https://github.com/visualon/cssparser/actions/workflows/build.yml/badge.svg)](https://github.com/visualon/cssparser/actions/workflows/build.yml)
 [![VisualOn.CSSParser](https://img.shields.io/nuget/v/VisualOn.CSSParser?label=VisualOn.CSSParser)](https://www.nuget.org/packages/VisualOn.CssParser)
 [![VisualOn.CSSParser.ExtendedLESSParser](https://img.shields.io/nuget/v/VisualOn.CSSParser.ExtendedLESSParser?label=VisualOn.CSSParser.ExtendedLESSParser)](https://www.nuget.org/packages/VisualOn.CssParser.ExtendedLESSParser)
 [![codecov](https://codecov.io/gh/visualon/cssparser/branch/main/graph/badge.svg?token=EEGfq3zpqS)](https://codecov.io/gh/visualon/cssparser)
 ![LICENSE](https://img.shields.io/github/license/visualon/cssparser)
 
-# CSS Parser 
-
 This is a fork from [Dan Roberts](https://bitbucket.org/DanRoberts/cssparser).
 
 A simple CSS and LESS parser to categorise strings of content and optionally generate a hierarchical representation of it.
 
 ## Changes
+
 See [Releases](https://github.com/visualon/cssparser/releases)
 
 ## License
-[MIT License](LICENSE.txt)
 
+[MIT License](LICENSE.txt)
 
 ### Howto
 
@@ -115,4 +116,4 @@ becomes something like
         padding
           8px
 
-*(Above: "html" represent a Selector instance with a ChildFragments property containing Selector instances for the "h1" and "p", each with ChildFragments data made up of StylePropertyValue and StylePropertyValue instances).*
+_(Above: "html" represent a Selector instance with a ChildFragments property containing Selector instances for the "h1" and "p", each with ChildFragments data made up of StylePropertyValue and StylePropertyValue instances)._
