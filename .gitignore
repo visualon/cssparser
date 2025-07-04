@@ -31,3 +31,6 @@ _ReSharper*/
 *.orig
 
 [Pp]ackages/
+
+# others
+/CHANGELOG.md
