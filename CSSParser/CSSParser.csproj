@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net472;net6.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net472;net8.0</TargetFrameworks>
 
         <Title>C# Css Parser</Title>
         <Description>A simple CSS parser to categorise strings of content and optionally generate a hierarchical representation of it</Description>
