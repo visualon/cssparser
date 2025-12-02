@@ -49,16 +49,17 @@ jobs:
       - name: Test
         run: dotnet test --no-build --verbosity normal
 
-      - name: Codecov
+      - name: Codecov test results
+        if: github.event_name != 'merge_group' && !cancelled()
+        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+        with:
+          use_oidc: true
+          report_type: test_results
+          fail_ci_if_error: true
+
+      - name: Codecov coverage results
         uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
         with:
           use_oidc: true
           files: '**/TestResults/*/*.cobertura.xml'
-          fail_ci_if_error: true
-
-      - name: Codecov Test
-        if: github.event_name != 'merge_group' && !cancelled()
-        uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # v1.1.1
-        with:
-          use_oidc: true
           fail_ci_if_error: true
