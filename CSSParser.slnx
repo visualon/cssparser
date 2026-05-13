@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Solution Files/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="LICENSE.txt" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="CSSParser.ExtendedLESSParser/CSSParser.ExtendedLESSParser.csproj" />
+  <Project Path="CSSParser/CSSParser.csproj" />
+  <Project Path="CSSRenderers/CSSRenderers.csproj" />
+  <Project Path="Tester/Tester.csproj" />
+  <Project Path="UnitTests/UnitTests.csproj" />
+</Solution>
