@@ -38,6 +38,7 @@ jobs:
         with:
           dotnet-version: |
             8
+            10
           dotnet-quality: ga
 
       - name: Restore dependencies
