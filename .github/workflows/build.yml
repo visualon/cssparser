@@ -63,3 +63,25 @@ jobs:
           use_oidc: true
           files: '**/TestResults/*/*.cobertura.xml'
           fail_ci_if_error: true
+
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0 # Important for changelog
+          # doesn't work with git-cliff
+          # https://github.com/orhun/git-cliff/issues/1521
+          # filter: blob:none
+          show-progress: false
+
+      - name: Generate changelog with git-cliff
+        uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4.8.0
+        with:
+          args: --unreleased --strip all
+        env:
+          # DEBUG: true
+          OUTPUT: CHANGELOG.md
+
+      - name: Adding changelog to summary
+        run: cat CHANGELOG.md >> $GITHUB_STEP_SUMMARY
