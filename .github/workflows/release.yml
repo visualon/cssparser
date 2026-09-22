@@ -95,7 +95,7 @@ jobs:
         run: echo VERSION=${GITHUB_REF_NAME#v} >> $GITHUB_ENV # trim leading 'v' from tag name
 
       - name: Generate changelog with git-cliff
-        uses: orhun/git-cliff-action@3d96a18cc4ec17e9dc69ddcc424ccafaf1f78ce2 # v4.9.0
+        uses: orhun/git-cliff-action@a9a95522b26fe6403f7bb24031f21fb573d0f5ff # v4.9.1
         with:
           args: --latest --strip all
         env:
